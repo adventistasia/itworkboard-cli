@@ -1,0 +1,40 @@
+{
+  "status": "ok",
+  "intent": "open_items",
+  "source": {
+    "system": "sharepoint",
+    "siteUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard",
+    "listName": "WorkBoard",
+    "listId": "example-list-id"
+  },
+  "retrievedAt": "2026-06-17T00:00:00Z",
+  "filters": {
+    "statusAlias": "open"
+  },
+  "result": {
+    "count": 1,
+    "items": [
+      {
+        "id": "123",
+        "title": "Example work item",
+        "status": "Open",
+        "priority": "High",
+        "owner": {
+          "displayName": "Example Person",
+          "email": "person@example.org"
+        },
+        "requester": null,
+        "department": "IT",
+        "project": null,
+        "dueDate": "2026-06-30",
+        "createdDate": "2026-06-01T00:00:00Z",
+        "modifiedDate": "2026-06-10T00:00:00Z",
+        "blockedReason": null,
+        "sourceUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/WorkBoard/DispForm.aspx?ID=123",
+        "warnings": []
+      }
+    ]
+  },
+  "warnings": [],
+  "errors": []
+}

@@ -1,0 +1,42 @@
+# Example WorkBoard normalization config.
+# This must be reviewed against exported SharePoint schema before production use.
+
+site_url: "https://southernasiapacific.sharepoint.com/sites/ITWorkboard"
+primary_list_name: "WorkBoard"
+
+fields:
+  id: "id"
+  title: "Title"
+  status: "Status"
+  priority: "Priority"
+  owner: "AssignedTo"
+  requester: "Requester"
+  department: "Department"
+  project: "Project"
+  due_date: "DueDate"
+  created_date: "Created"
+  modified_date: "Modified"
+  blocked_reason: "BlockedReason"
+
+status_aliases:
+  open:
+    - "Open"
+    - "In Progress"
+    - "New"
+  closed:
+    - "Done"
+    - "Completed"
+    - "Closed"
+    - "Cancelled"
+  blocked:
+    - "Blocked"
+    - "On Hold"
+
+output:
+  include_raw_fields: false
+  include_source_url: true
+  include_warnings: true
+
+query_defaults:
+  max_items: 100
+  recently_updated_days: 7

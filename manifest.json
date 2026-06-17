@@ -1,0 +1,179 @@
+{
+  "package_name": "sharepoint_workboard_cli_execution_package",
+  "version": "1.0.0",
+  "final_output": "usable read-only SharePoint WorkBoard CLI",
+  "default_execution_mode": "decomposed",
+  "target": {
+    "site_url": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard",
+    "primary_list_url": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/WorkBoard",
+    "primary_list_name": "WorkBoard"
+  },
+  "global_constraints": [
+    "read-only first version",
+    "no SharePoint writes",
+    "no secrets in source, logs, or generated outputs",
+    "SharePoint remains the source of truth",
+    "agent-facing outputs must include source metadata and retrievedAt timestamp",
+    "unknown schema must be discovered, exported, and reviewed before hard-coded mappings"
+  ],
+  "tasks": [
+    {
+      "id": "T01",
+      "name": "Discovery spike",
+      "agent": "builder",
+      "brief": "briefs/t01_discovery_spike.md",
+      "outputs": [
+        "site resolution result",
+        "list inventory",
+        "WorkBoard schema export",
+        "10 sample items if permitted",
+        "permission gaps"
+      ],
+      "gate": "A01"
+    },
+    {
+      "id": "A01",
+      "name": "Discovery audit",
+      "agent": "auditor",
+      "brief": "audit_briefs/a01_discovery_audit.md",
+      "outputs": [
+        "pass/fail audit verdict"
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "Architecture and contracts",
+      "agent": "builder",
+      "brief": "briefs/t02_architecture_and_contracts.md",
+      "outputs": [
+        "architecture decision record",
+        "CLI command contract",
+        "agent JSON contract",
+        "normalization config contract"
+      ],
+      "gate": "A02"
+    },
+    {
+      "id": "A02",
+      "name": "Architecture and security audit",
+      "agent": "auditor",
+      "brief": "audit_briefs/a02_architecture_and_security_audit.md",
+      "outputs": [
+        "pass/fail audit verdict"
+      ]
+    },
+    {
+      "id": "T03",
+      "name": "CLI scaffold",
+      "agent": "builder",
+      "brief": "briefs/t03_cli_scaffold.md",
+      "outputs": [
+        "installable package scaffold",
+        "base command group",
+        "test harness"
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "Graph auth and client",
+      "agent": "builder",
+      "brief": "briefs/t04_graph_auth_and_client.md",
+      "outputs": [
+        "auth module",
+        "Graph client wrapper",
+        "safe logging",
+        "auth tests"
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "SharePoint list discovery",
+      "agent": "builder",
+      "brief": "briefs/t05_sharepoint_list_discovery.md",
+      "outputs": [
+        "site info command",
+        "lists discover command",
+        "schema export command",
+        "items list command"
+      ],
+      "gate": "A03"
+    },
+    {
+      "id": "A03",
+      "name": "Implementation audit",
+      "agent": "auditor",
+      "brief": "audit_briefs/a03_implementation_audit.md",
+      "outputs": [
+        "pass/fail audit verdict"
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "Schema mapping and normalization",
+      "agent": "builder",
+      "brief": "briefs/t06_schema_mapping_and_normalization.md",
+      "outputs": [
+        "normalization module",
+        "config file support",
+        "mapping validation",
+        "tests"
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "Operational query commands and summaries",
+      "agent": "builder",
+      "brief": "briefs/t07_query_commands_and_summaries.md",
+      "outputs": [
+        "open/overdue/by-owner/blocked/recently-updated queries",
+        "manager summary command",
+        "tests"
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "Agent interface and JSON contract",
+      "agent": "builder",
+      "brief": "briefs/t08_agent_interface_and_json_contract.md",
+      "outputs": [
+        "agent query command",
+        "stable JSON envelope",
+        "sample outputs",
+        "contract tests"
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "Tests and CI readiness",
+      "agent": "builder",
+      "brief": "briefs/t09_tests_and_ci.md",
+      "outputs": [
+        "unit tests",
+        "mock Graph fixtures",
+        "lint/test commands",
+        "CI notes"
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "Documentation and operator guides",
+      "agent": "builder",
+      "brief": "briefs/t10_docs_and_operator_guides.md",
+      "outputs": [
+        "README",
+        "admin permissions guide",
+        "manager usage guide",
+        "agent usage guide"
+      ]
+    },
+    {
+      "id": "A04",
+      "name": "Final CLI acceptance audit",
+      "agent": "auditor",
+      "brief": "audit_briefs/a04_final_cli_acceptance_audit.md",
+      "outputs": [
+        "final release verdict"
+      ]
+    }
+  ]
+}

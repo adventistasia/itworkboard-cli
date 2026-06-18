@@ -1,6 +1,6 @@
 ---
 title: IT WorkBoard CLI — Strategy
-last_updated: 2026-06-18
+last_updated: 2026-06-19
 status: draft
 ---
 
@@ -25,12 +25,10 @@ A purpose-built CLI wrapping the Microsoft Graph API with predefined agent-frien
 
 ## Tracks
 
-1. **Discovery & Auth** — MSAL setup, site resolution, list discovery
-2. **Schema export** — field discovery and normalization config
-3. **Query intents** — predefined queries: open, overdue, blocked, by-owner, recently-updated, manager summary
-4. **CLI commands** — Typer entrypoints wrapping the intents
-5. **Output & Summaries** — structured JSON + markdown summary formats
-6. **Testing & quality** — pytest, ruff, audit gates per the orchestrator flow
+1. **Data Source Integration** — SharePoint site resolution, list discovery, schema export, MSAL auth. Establishes the connection to the workboard.
+2. **Agent Query Layer** — predefined query intents (`open`, `overdue`, `blocked`, `by_owner`, `manager_summary`) and their CLI entrypoints. The core value for AI agents.
+3. **Output & Summaries** — structured JSON envelopes, markdown summary formats, agent-friendly output contracts. Makes the data consumable.
+4. **Auto-Refinement** — the agent monitors interaction patterns and surfaced data to proactively suggest schema updates, new query intents, stale documentation refreshes, and output improvements without human triage.
 
 ## Not working on
 

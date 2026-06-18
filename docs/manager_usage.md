@@ -3,7 +3,7 @@
 ## Install and authenticate
 
 ```bash
-pip install -e .
+pip install .
 workboard auth login
 ```
 

@@ -5,7 +5,7 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint. Provid
 ## Quick start
 
 ```bash
-pip install -e ".[dev]"
+pip install .
 workboard --help
 ```
 
@@ -47,9 +47,22 @@ Default config: `config/workboard.defaults.yaml` (committed). Override via `conf
 ## Development
 
 ```bash
-pytest              # Run tests
-ruff check .        # Lint
+pip install -e ".[dev]"   # Editable install with dev dependencies (pytest, ruff)
+pytest                    # Run tests
+ruff check .              # Lint
 ```
+
+## Documentation
+
+See `docs/` for detailed guides:
+
+- [`configuration.md`](docs/configuration.md) — Config file format and field mapping
+- [`manager_usage.md`](docs/manager_usage.md) — Daily summary and manager workflows
+- [`agent_usage.md`](docs/agent_usage.md) — AI agent JSON interface
+- [`testing.md`](docs/testing.md) — Running tests
+- [`troubleshooting.md`](docs/troubleshooting.md) — Common issues
+- [`security_model.md`](docs/security_model.md) — Auth and permissions
+- [`architecture.md`](docs/architecture.md) — Module design and data flow
 
 ## Target
 

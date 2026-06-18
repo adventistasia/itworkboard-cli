@@ -1,6 +1,6 @@
 # CLI command contract
 
-The binary is `workboard`. Install via `pip install -e .` and run `workboard --help`.
+The binary is `workboard`. Install via `pip install .` and run `workboard --help`.
 
 ## Global options
 

@@ -194,7 +194,7 @@ def lists_discover(
 @schema_app.command("export")
 def schema_export(
     list_name: str = typer.Option("WorkBoard", "--list", help="List name"),
-    output: str = typer.Option("workboard_schema.json", "--output", help="Output file path"),
+    output: str = typer.Option("discovery/workboard_schema.json", "--output", help="Output file path"),
 ):
     """Export column schema for a SharePoint list to a JSON file."""
     try:
@@ -272,7 +272,7 @@ def items_get(
 @config_app.command("validate")
 def config_validate(
     config_path: str = typer.Option("config/workboard.defaults.yaml", "--config", help="Config file path"),
-    schema_path: str = typer.Option("workboard_schema.json", "--schema", help="Exported schema JSON path"),
+    schema_path: str = typer.Option("discovery/workboard_schema.json", "--schema", help="Exported schema JSON path"),
 ):
     """Validate that config field mappings exist in the exported schema."""
     try:

@@ -81,7 +81,7 @@ Five files from live SharePoint:
 |------|------|---------|
 | `site.json` | 574 B | Resolved site metadata |
 | `lists.json` | 9.8 KB | 9 lists: Users, Deliverables, Work Board, EventLog, WorkIntake, Web Template Extensions, Hosted App Configs, Work Review, Documents |
-| `workboard_schema.json` | 19.2 KB | 43 column definitions |
+| `discovery/workboard_schema.json` | 19.2 KB | 43 column definitions |
 | `workboard_sample_items.json` | 225 KB | 30 items with expanded fields |
 | `permission_report.md` | 892 B | Full inventory report |
 

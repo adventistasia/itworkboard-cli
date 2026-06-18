@@ -71,6 +71,10 @@ python -m workboard_cli --help    # CLI smoke test
 pip install -e .                  # editable install
 ```
 
+## User onboarding
+
+When onboarding a new user, follow `docs/onboarding_agent.md` — install, auth, demo, summarize.
+
 ## Source references
 
 `sources.md` links to current Microsoft Graph docs. Use those over copied examples if discrepancies arise.

@@ -1,6 +1,6 @@
 ---
 description: Proxy to the IT WorkBoard CLI. Run workboard queries, summarize board status, answer questions about items, owners, and stages. Use with @workboard when the user asks about work items, the workboard, IT delivery status, or wants to query SharePoint work data.
-mode: primary
+mode: all
 permission:
   edit: deny
   bash: allow

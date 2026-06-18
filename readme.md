@@ -9,6 +9,24 @@ pip install .
 workboard --help
 ```
 
+## Agent install prompt
+
+Copy and paste the following into your AI agent to install and onboard:
+
+```
+Install workboard-cli from this repo, then onboard me.
+
+1. Run `pip install -e .` from the repo root to install the package.
+2. Verify the CLI works: run `workboard --help`.
+3. Walk me through setup:
+   - Check if `config/local.yaml` exists. If not, copy `config/workboard.example.yaml` to `config/local.yaml`.
+   - Ask me for my Azure AD `tenant_id` and `client_id`, then write them into `config/local.yaml`.
+4. Run `workboard auth login` and guide me through the device code authentication flow.
+5. Once authenticated, run `workboard site info` to confirm connectivity.
+6. Run a quick query to show me it works: `workboard items list --limit 5`.
+7. Summarise what was installed and suggest next steps (try a query, view manager summary, or read docs/agent_usage.md).
+```
+
 ## Uninstall
 
 ```bash

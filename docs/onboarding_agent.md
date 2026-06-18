@@ -27,10 +27,10 @@ Confirm the command groups (auth, site, lists, schema, items, query, summary, ag
 workboard auth login
 ```
 
-The CLI prints a URL and a device code. Tell the user:
-- "Open the URL in any browser"
-- "Enter the code shown above"
-- "Sign in with your Microsoft work account"
+The CLI prints a URL and a device code. The agent should:
+- Open the URL in the user's default browser (e.g., `Start-Process "https://..."` on Windows)
+- Show the URL and code to the user
+- Tell the user: "Enter the code shown above, then sign in with your Microsoft work account"
 - The CLI will proceed automatically once authentication completes
 
 Verify success:

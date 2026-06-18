@@ -1,4 +1,5 @@
 import json
+import webbrowser
 from pathlib import Path
 
 import msal
@@ -74,6 +75,7 @@ def get_token(tenant_id=None, client_id=None, force=False):
 
     print(f"Open: {flow['verification_uri']}")
     print(f"Code: {flow['user_code']}")
+    webbrowser.open(flow['verification_uri'])
 
     result = app.acquire_token_by_device_flow(flow)
     if "access_token" not in result:

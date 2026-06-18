@@ -68,10 +68,20 @@ def test_agent_query_unsupported_intent():
     assert "unsupported_intent" in result.stdout
 
 
-def test_auth_status_not_authenticated():
-    result = runner.invoke(app, ["auth", "status"])
+def test_auth_status_authenticated():
+    from unittest.mock import patch
+    with patch("workboard_cli.cli.check_auth", return_value=True):
+        result = runner.invoke(app, ["auth", "status"])
     assert result.exit_code == 0
-    assert "false" in result.stdout
+    assert '"authenticated": true' in result.stdout
+
+
+def test_auth_status_not_authenticated():
+    from unittest.mock import patch
+    with patch("workboard_cli.cli.check_auth", return_value=False):
+        result = runner.invoke(app, ["auth", "status"])
+    assert result.exit_code == 0
+    assert '"authenticated": false' in result.stdout
 
 
 

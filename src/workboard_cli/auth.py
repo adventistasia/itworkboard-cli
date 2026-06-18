@@ -93,4 +93,25 @@ def get_token(tenant_id=None, client_id=None, force=False):
 
 
 def check_auth():
-    return bool(TOKEN_CACHE.get("token"))
+    if TOKEN_CACHE.get("token"):
+        return True
+
+    cfg = load_config()
+    authority = f"https://login.microsoftonline.com/{cfg['tenant_id']}"
+    cache = msal.SerializableTokenCache()
+    cache.deserialize(_load_msal_cache())
+    app = msal.PublicClientApplication(cfg["client_id"], authority=authority, token_cache=cache)
+
+    accounts = app.get_accounts()
+    if accounts:
+        result = app.acquire_token_silent(
+            scopes=["https://graph.microsoft.com/Sites.Read.All"],
+            account=accounts[0],
+        )
+        if result and "access_token" in result:
+            TOKEN_CACHE["token"] = result["access_token"]
+            if cache.has_state_changed:
+                _save_msal_cache(cache.serialize())
+            return True
+
+    return False

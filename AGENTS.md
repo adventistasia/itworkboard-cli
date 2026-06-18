@@ -29,6 +29,10 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint. Delive
 - [Testing](docs/agent-instructions/testing.md) — mock patterns, test structure, writing tests
 - [Maintenance](docs/agent-instructions/maintenance.md) — schema drift, auth troubleshooting, CI
 
+## Project Agent
+
+`@workboard` — proxy to the workboard CLI. Use it to run queries, check board status, look up items by owner, get manager summaries, or answer any question about the IT WorkBoard.
+
 ## User Onboarding
 
 See [docs/onboarding_agent.md](docs/onboarding_agent.md) for installing, authenticating, and running a demo query.

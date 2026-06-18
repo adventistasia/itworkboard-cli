@@ -1,0 +1,14 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites/$entity",
+  "createdDateTime": "2026-03-10T04:00:03.39Z",
+  "description": "IT Workboard",
+  "id": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c",
+  "lastModifiedDateTime": "2026-06-18T08:42:43Z",
+  "name": "ITWorkboard",
+  "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard",
+  "displayName": "IT Workboard",
+  "root": {},
+  "siteCollection": {
+    "hostname": "southernasiapacific.sharepoint.com"
+  }
+}

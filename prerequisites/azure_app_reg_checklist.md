@@ -11,38 +11,38 @@ Use this to set up the app registration needed before discovery can run.
 
 ## 1. Create the app registration
 
-- [ ] Go to [Azure Portal](https://portal.azure.com) → **Microsoft Entra ID** → **App registrations** → **New registration**
-- [ ] Name: `WorkBoard CLI`
-- [ ] Supported account types: **Accounts in this organizational directory only** (single tenant)
-- [ ] Redirect URI: leave blank
-- [ ] Click **Register**
-- [ ] **Copy** the following from the Overview page:
+- [x] Go to [Azure Portal](https://portal.azure.com) → **Microsoft Entra ID** → **App registrations** → **New registration**
+- [x] Name: `WorkBoard CLI`
+- [x] Supported account types: **Accounts in this organizational directory only** (single tenant)
+- [x] Redirect URI: leave blank
+- [x] Click **Register**
+- [x] **Copy** the following from the Overview page:
 
 | Field | Value (paste here) |
 |-------|-------------------|
-| Application (client) ID | `__________________` |
-| Directory (tenant) ID | `__________________` |
+| Application (client) ID | `<paste-client-id>` |
+| Directory (tenant) ID | `<paste-tenant-id>` |
 
 ## 2. Enable device code flow
 
-- [ ] Left nav → **Authentication**
-- [ ] Under **Advanced settings** → **Allow public client flows**, toggle **Yes**
-- [ ] Click **Save**
+- [x] Left nav → **Authentication**
+- [x] Under **Advanced settings** → **Allow public client flows**, toggle **Yes**
+- [x] Click **Save**
 
 ## 3. Add Graph API permission
 
-- [ ] Left nav → **API permissions** → **Add a permission**
-- [ ] Choose **Microsoft Graph** → **Delegated permissions**
-- [ ] Search for and check **`Sites.Read.All`**
-- [ ] Click **Add permissions**
-- [ ] **Grant admin consent** (click the button, confirm) — otherwise the first login will prompt for consent
+- [x] Left nav → **API permissions** → **Add a permission**
+- [x] Choose **Microsoft Graph** → **Delegated permissions**
+- [x] Search for and check **`Sites.Read.All`**
+- [x] Click **Add permissions**
+- [x] **Grant admin consent** (click the button, confirm) — otherwise the first login will prompt for consent
 
 ## 4. Verify the app
 
-- [ ] Go back to **Overview**
-- [ ] Confirm **Application ID** and **Directory ID** are noted somewhere safe
-- [ ] Confirm **"Allow public client flows"** shows **Yes**
-- [ ] Confirm **API permissions** shows **`Sites.Read.All`** with status **Granted for ...**
+- [x] Go back to **Overview**
+- [x] Confirm **Application ID** and **Directory ID** are noted somewhere safe
+- [x] Confirm **"Allow public client flows"** shows **Yes**
+- [x] Confirm **API permissions** shows **`Sites.Read.All`** with status **Granted for ...**
 
 ## 5. Run discovery
 
@@ -68,7 +68,7 @@ discovery/permission_report.md
 
 ## 6. Share with the agent
 
-- [ ] Share the **Tenant ID** and **Client ID** with the agent (not the secret — no secret needed for device code flow)
+- [x] Share the **Tenant ID** and **Client ID** with the agent (not the secret — no secret needed for device code flow)
 
 ---
 
@@ -79,4 +79,4 @@ discovery/permission_report.md
 | `device_flow_failed` | Public client flow not enabled | Go back to step 2 |
 | `permission_denied` on site resolution | `Sites.Read.All` not granted, or admin consent missing | Go back to step 3 |
 | `permission_denied` on lists/items | User doesn't have access to the SharePoint site | Request site access from an admin |
-| `not_found` on site resolution | Wrong tenant or site URL | Verify tenant ID and target site URL |
+| `not_found` on site resolution | Wrong tenant or site URL | Verify tenant ID and target site URL It doesn't freeze me Apple. |

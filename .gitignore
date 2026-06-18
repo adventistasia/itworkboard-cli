@@ -44,3 +44,4 @@ Thumbs.db
 secrets/
 credentials/
 *.token
+config/local.yaml

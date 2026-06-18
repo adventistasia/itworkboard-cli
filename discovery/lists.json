@@ -1,0 +1,283 @@
+[
+  {
+    "@odata.etag": "\"7365686d-7cf5-4201-9332-5289f1dd534b,19\"",
+    "createdDateTime": "2026-03-10T06:43:43Z",
+    "description": "",
+    "eTag": "\"7365686d-7cf5-4201-9332-5289f1dd534b,19\"",
+    "id": "7365686d-7cf5-4201-9332-5289f1dd534b",
+    "lastModifiedDateTime": "2026-06-16T01:46:33Z",
+    "name": "Users",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/Users",
+    "displayName": "Users",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "genericList"
+    }
+  },
+  {
+    "@odata.etag": "\"5539bdfa-33e0-445e-b0a4-5536d984df53,31\"",
+    "createdDateTime": "2026-03-25T23:54:49Z",
+    "description": "",
+    "eTag": "\"5539bdfa-33e0-445e-b0a4-5536d984df53,31\"",
+    "id": "5539bdfa-33e0-445e-b0a4-5536d984df53",
+    "lastModifiedDateTime": "2026-06-17T09:24:03Z",
+    "name": "Deliverables",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/Deliverables",
+    "displayName": "Deliverables",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "genericList"
+    }
+  },
+  {
+    "@odata.etag": "\"57f6d985-7e30-4895-914e-60e73d39e1e0,219\"",
+    "createdDateTime": "2026-03-10T06:38:50Z",
+    "description": "",
+    "eTag": "\"57f6d985-7e30-4895-914e-60e73d39e1e0,219\"",
+    "id": "57f6d985-7e30-4895-914e-60e73d39e1e0",
+    "lastModifiedDateTime": "2026-06-18T01:10:26Z",
+    "name": "WorkBoard",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/WorkBoard",
+    "displayName": "Work Board",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "genericList"
+    }
+  },
+  {
+    "@odata.etag": "\"0f46ff83-a463-4890-9db4-987e478a564a,25\"",
+    "createdDateTime": "2026-04-24T01:29:17Z",
+    "description": "",
+    "eTag": "\"0f46ff83-a463-4890-9db4-987e478a564a,25\"",
+    "id": "0f46ff83-a463-4890-9db4-987e478a564a",
+    "lastModifiedDateTime": "2026-06-18T00:55:59Z",
+    "name": "EventLog",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/EventLog",
+    "displayName": "EventLog",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "genericList"
+    }
+  },
+  {
+    "@odata.etag": "\"d158d1f7-f574-43a8-b2e2-c29ef58d765d,53\"",
+    "createdDateTime": "2026-04-16T21:27:26Z",
+    "description": "",
+    "eTag": "\"d158d1f7-f574-43a8-b2e2-c29ef58d765d,53\"",
+    "id": "d158d1f7-f574-43a8-b2e2-c29ef58d765d",
+    "lastModifiedDateTime": "2026-06-16T00:44:15Z",
+    "name": "WorkIntake",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/WorkIntake",
+    "displayName": "WorkIntake",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "genericList"
+    }
+  },
+  {
+    "@odata.etag": "\"aaec6eee-289f-4ff5-b5fb-ddc98f5e87bb,0\"",
+    "createdDateTime": "2026-03-10T04:00:08Z",
+    "description": "This list stores run results for the Web Template Extensions feature.",
+    "eTag": "\"aaec6eee-289f-4ff5-b5fb-ddc98f5e87bb,0\"",
+    "id": "aaec6eee-289f-4ff5-b5fb-ddc98f5e87bb",
+    "lastModifiedDateTime": "2026-05-06T21:11:43Z",
+    "name": "wte",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/_catalogs/wte",
+    "displayName": "Web Template Extensions",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": true,
+      "template": "webTemplateExtensionsList"
+    }
+  },
+  {
+    "@odata.etag": "\"2f2de2d7-d993-4008-b3cb-ebcd6683f1a9,0\"",
+    "createdDateTime": "2026-03-11T02:04:20Z",
+    "description": "SharePoint Framework components hosted by other Microsoft Services",
+    "eTag": "\"2f2de2d7-d993-4008-b3cb-ebcd6683f1a9,0\"",
+    "id": "2f2de2d7-d993-4008-b3cb-ebcd6683f1a9",
+    "lastModifiedDateTime": "2026-03-11T02:04:20Z",
+    "name": "HostedAppConfigs",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/HostedAppConfigs",
+    "displayName": "Hosted App Configs",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": true,
+      "template": "338"
+    }
+  },
+  {
+    "@odata.etag": "\"34294fef-5878-4607-8f9d-f4c14d57979c,55\"",
+    "createdDateTime": "2026-05-06T21:11:42Z",
+    "description": "",
+    "eTag": "\"34294fef-5878-4607-8f9d-f4c14d57979c,55\"",
+    "id": "34294fef-5878-4607-8f9d-f4c14d57979c",
+    "lastModifiedDateTime": "2026-06-18T00:54:46Z",
+    "name": "WorkReview",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/WorkReview",
+    "displayName": "Work Review",
+    "createdBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "genericList"
+    }
+  },
+  {
+    "@odata.etag": "\"7eaca701-0a4d-4aa2-8093-fe34fa1600f6,9\"",
+    "createdDateTime": "2026-03-07T16:32:09Z",
+    "description": "",
+    "eTag": "\"7eaca701-0a4d-4aa2-8093-fe34fa1600f6,9\"",
+    "id": "7eaca701-0a4d-4aa2-8093-fe34fa1600f6",
+    "lastModifiedDateTime": "2026-06-17T04:54:33Z",
+    "name": "Shared Documents",
+    "webUrl": "https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Shared%20Documents",
+    "displayName": "Documents",
+    "createdBy": {
+      "user": {
+        "displayName": "System Account"
+      }
+    },
+    "lastModifiedBy": {
+      "user": {
+        "email": "rmicua@ssd.org",
+        "id": "ad9a86db-630e-471a-b62a-a89427237b6b",
+        "displayName": "Ryann Micua"
+      }
+    },
+    "parentReference": {
+      "siteId": "southernasiapacific.sharepoint.com,8c33f30e-3258-43ce-9bea-df3aa41710d8,7acd4aed-8cbd-42b8-a038-90a74113481c"
+    },
+    "list": {
+      "contentTypesEnabled": false,
+      "hidden": false,
+      "template": "documentLibrary"
+    }
+  }
+]

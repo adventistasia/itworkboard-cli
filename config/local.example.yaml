@@ -1,0 +1,6 @@
+# Local overrides — gitignored.
+# Defaults come from config/workboard.defaults.yaml (committed).
+# Put any local overrides here: credentials, different site URL, test list, etc.
+
+tenant_id: "your-tenant-id"
+client_id: "your-client-id"

@@ -1,0 +1,62 @@
+# WorkBoard CLI default config — committed, shared across the team.
+# Override any value via config/local.yaml (gitignored) or env vars.
+#
+# Supported env vars (highest precedence):
+#   WORKBOARD_TENANT_ID     — Azure AD tenant ID
+#   WORKBOARD_CLIENT_ID     — Azure AD app (client) ID
+#   WORKBOARD_SITE_URL      — SharePoint site URL
+#   WORKBOARD_LIST_NAME     — Primary list name
+
+site_url: "https://southernasiapacific.sharepoint.com/sites/ITWorkboard"
+primary_list_name: "WorkBoard"
+
+fields:
+  id: "ID"
+  title: "Title"
+  stage: "Stage"
+  delivery_owner: "DeliveryOwner"
+  why: "Why"
+  who: "Who"
+  schedule: "Schedule"
+  scope: "Scope"
+  requirements: "Requirements"
+  acceptance_criteria: "AcceptanceCriteria"
+  decision_authority: "DecisionAuthority"
+  acceptance_authority: "AcceptanceAuthority"
+  deliverables: "Deliverables"
+  work_intake: "WorkIntake"
+  rel_project: "RelProject"
+  rel_work_brief: "RelWorkBrief"
+  date_due: "DateDue"
+  date_committed: "DateCommitted"
+  date_start: "DateStart"
+  date_closed: "DateClosed"
+  cycle_time: "CycleTime"
+  color_tag: "_ColorTag"
+  created: "Created"
+  modified: "Modified"
+  author: "Author"
+  editor: "Editor"
+
+stage_aliases:
+  open:
+    - "Open"
+    - "In Progress"
+    - "New"
+  closed:
+    - "Closed"
+    - "Done"
+    - "Completed"
+    - "Cancelled"
+  blocked:
+    - "Blocked"
+    - "On Hold"
+
+output:
+  include_raw_fields: false
+  include_source_url: true
+  include_warnings: true
+
+query_defaults:
+  max_items: 100
+  recently_updated_days: 7

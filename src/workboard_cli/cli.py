@@ -83,7 +83,8 @@ def _fetch_items(cfg, client, list_name, limit=None):
             f"List '{list_name}' not found on site.",
             "Use 'workboard lists discover' to see available lists.",
         )
-    items = get_list_items(client, site_id, target["id"], limit=limit)
+    field_names = list(cfg.get("fields", {}).values())
+    items = get_list_items(client, site_id, target["id"], limit=limit, field_names=field_names)
     return items, cfg, target
 
 
@@ -257,7 +258,8 @@ def items_get(
                 f"List '{list_name}' not found on site.",
                 "Use 'workboard lists discover' to see available lists.",
             )
-        item = get_list_item(client, site_id, target["id"], item_id)
+        field_names = list(cfg.get("fields", {}).values())
+        item = get_list_item(client, site_id, target["id"], item_id, field_names=field_names)
         envelope = {
             "status": "ok",
             "source": _build_source(cfg["site_url"], list_name, target["id"]),
@@ -440,7 +442,7 @@ def self_install():
         print(f"Already on PATH: {path_entry}")
         return
     import subprocess
-    proc = subprocess.run(
+    subprocess.run(
         ["powershell", "-NoProfile", "-Command",
          f"[Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';{path_entry}', 'User')"],
         capture_output=True, text=True, check=True

@@ -4,6 +4,10 @@ from datetime import datetime
 def _get_field(raw_fields, field_name, warnings):
     value = raw_fields.get(field_name)
     if value is None:
+        lookup_id_name = f"{field_name}LookupId"
+        value = raw_fields.get(lookup_id_name)
+        if value is not None:
+            return value
         warnings.append(f"Field '{field_name}' not found in SharePoint item.")
     return value
 

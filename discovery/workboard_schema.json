@@ -1,731 +1,306 @@
-[
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Title",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "fa564e0f-0c70-4ab9-b863-0177e6ddd247",
-    "indexed": false,
-    "name": "Title",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": false,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 0,
-      "maxLength": 255
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Color Tag",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "76d13cd2-1bae-45a5-8b74-545b87b65037",
-    "indexed": false,
-    "name": "_ColorTag",
-    "readOnly": true,
-    "required": false,
-    "text": {
-      "allowMultipleLines": false,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 0,
-      "maxLength": 255
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Compliance Asset Id",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "3a6b296c-3f50-445c-a13f-9c679ea9dda3",
-    "indexed": false,
-    "name": "ComplianceAssetId",
-    "readOnly": true,
-    "required": false,
-    "text": {
-      "allowMultipleLines": false,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 0,
-      "maxLength": 255
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "RelProject",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "c81c17ff-565c-4788-b2a1-0f4383af6097",
-    "indexed": false,
-    "name": "RelProject",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": false,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 0,
-      "maxLength": 255
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "RelWorkBrief",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "a4c03ce5-e0cb-4126-b1ed-52906dca739a",
-    "indexed": false,
-    "name": "RelWorkBrief",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Delivery",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "21081aad-9f4a-42f6-8a92-085ae1044f24",
-    "indexed": true,
-    "name": "DeliveryOwner",
-    "readOnly": false,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "Title",
-      "listId": "7365686d-7cf5-4201-9332-5289f1dd534b"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Why",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "bcd0dc0a-0ff2-403e-82d4-57871c9ee00d",
-    "indexed": false,
-    "name": "Why",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Stage",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "ed5b1b9a-395b-4a86-9dc8-ea1a6b432338",
-    "indexed": false,
-    "name": "Stage",
-    "readOnly": false,
-    "required": false,
-    "choice": {
-      "allowTextEntry": false,
-      "choices": [
-        "New",
-        "Definition",
-        "Decision",
-        "Committed",
-        "Delivery",
-        "Closure",
-        "Closed",
-        "Blocked",
-        "Tabled",
-        "Canceled"
-      ],
-      "displayAs": "dropDownMenu"
+{
+  "columns": [
+    {
+      "name": "Title",
+      "displayName": "Title",
+      "type": "text",
+      "required": false,
+      "lookup": null
     },
-    "defaultValue": {
-      "value": "New"
+    {
+      "name": "_ColorTag",
+      "displayName": "Color Tag",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "ComplianceAssetId",
+      "displayName": "Compliance Asset Id",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "RelProject",
+      "displayName": "RelProject",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "RelWorkBrief",
+      "displayName": "RelWorkBrief",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "DeliveryOwner",
+      "displayName": "Delivery",
+      "type": "lookup",
+      "required": false,
+      "lookup": "7365686d-7cf5-4201-9332-5289f1dd534b"
+    },
+    {
+      "name": "Why",
+      "displayName": "Why",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Stage",
+      "displayName": "Stage",
+      "type": "choice",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Deliverables",
+      "displayName": "Deliverables",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "AcceptanceCriteria",
+      "displayName": "AcceptanceCriteria",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "DecisionAuthority",
+      "displayName": "Decision",
+      "type": "lookup",
+      "required": false,
+      "lookup": "7365686d-7cf5-4201-9332-5289f1dd534b"
+    },
+    {
+      "name": "AcceptanceAuthority",
+      "displayName": "Acceptance",
+      "type": "lookup",
+      "required": false,
+      "lookup": "7365686d-7cf5-4201-9332-5289f1dd534b"
+    },
+    {
+      "name": "Requirements",
+      "displayName": "Requirements",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Who",
+      "displayName": "Who",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Schedule",
+      "displayName": "Schedule",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "WorkIntake",
+      "displayName": "WorkIntake",
+      "type": "lookup",
+      "required": false,
+      "lookup": "d158d1f7-f574-43a8-b2e2-c29ef58d765d"
+    },
+    {
+      "name": "DateDue",
+      "displayName": "DateDue",
+      "type": "datetime",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "DateCommitted",
+      "displayName": "DateCommitted",
+      "type": "datetime",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Scope",
+      "displayName": "Scope",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "DateClosed",
+      "displayName": "DateClosed",
+      "type": "datetime",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "DateStart",
+      "displayName": "Start",
+      "type": "datetime",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "CycleTime",
+      "displayName": "CycleTime",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "ID",
+      "displayName": "ID",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "ContentType",
+      "displayName": "Content Type",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Modified",
+      "displayName": "Modified",
+      "type": "datetime",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Created",
+      "displayName": "Created",
+      "type": "datetime",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Author",
+      "displayName": "Created By",
+      "type": "personOrGroup",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Editor",
+      "displayName": "Modified By",
+      "type": "personOrGroup",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "_UIVersionString",
+      "displayName": "Version",
+      "type": "text",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Attachments",
+      "displayName": "Attachments",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "Edit",
+      "displayName": "Edit",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "LinkTitleNoMenu",
+      "displayName": "Title",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "LinkTitle",
+      "displayName": "Title",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "DocIcon",
+      "displayName": "Type",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "ItemChildCount",
+      "displayName": "Item Child Count",
+      "type": "lookup",
+      "required": false,
+      "lookup": ""
+    },
+    {
+      "name": "FolderChildCount",
+      "displayName": "Folder Child Count",
+      "type": "lookup",
+      "required": false,
+      "lookup": ""
+    },
+    {
+      "name": "_ComplianceFlags",
+      "displayName": "Label setting",
+      "type": "lookup",
+      "required": false,
+      "lookup": ""
+    },
+    {
+      "name": "_ComplianceTag",
+      "displayName": "Retention label",
+      "type": "lookup",
+      "required": false,
+      "lookup": ""
+    },
+    {
+      "name": "_ComplianceTagWrittenTime",
+      "displayName": "Retention label Applied",
+      "type": "lookup",
+      "required": false,
+      "lookup": ""
+    },
+    {
+      "name": "_ComplianceTagUserId",
+      "displayName": "Label applied by",
+      "type": "lookup",
+      "required": false,
+      "lookup": ""
+    },
+    {
+      "name": "_IsRecord",
+      "displayName": "Item is a Record",
+      "type": "unknown",
+      "required": false,
+      "lookup": null
+    },
+    {
+      "name": "AppAuthor",
+      "displayName": "App Created By",
+      "type": "lookup",
+      "required": false,
+      "lookup": "AppPrincipals"
+    },
+    {
+      "name": "AppEditor",
+      "displayName": "App Modified By",
+      "type": "lookup",
+      "required": false,
+      "lookup": "AppPrincipals"
     }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Deliverables",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "0a014c0f-7e16-4a7f-8526-382992c989ef",
-    "indexed": false,
-    "name": "Deliverables",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "Requirements that must be met to consider the work complete and acceptable",
-    "displayName": "AcceptanceCriteria",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "ffcce1eb-4c82-4399-be57-1a3259e654b4",
-    "indexed": false,
-    "name": "AcceptanceCriteria",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Decision",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "5b6cd1d3-1ba0-42c0-b235-18e637ffa092",
-    "indexed": false,
-    "name": "DecisionAuthority",
-    "readOnly": false,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "Title",
-      "listId": "7365686d-7cf5-4201-9332-5289f1dd534b"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Acceptance",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "974d0a1b-188e-44b6-b032-1bb1b69da111",
-    "indexed": false,
-    "name": "AcceptanceAuthority",
-    "readOnly": false,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "Title",
-      "listId": "7365686d-7cf5-4201-9332-5289f1dd534b"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Requirements",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "16e1b1c6-2d30-4725-8ea5-10b5767b3d10",
-    "indexed": false,
-    "name": "Requirements",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "Who are involved and what are their responsibilities?",
-    "displayName": "Who",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "8ebc52ac-8e7d-4989-bc3a-8c35681af40d",
-    "indexed": false,
-    "name": "Who",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Schedule",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "8a44b454-1718-4721-8f37-fe66ff2fb689",
-    "indexed": false,
-    "name": "Schedule",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "WorkIntake",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "9331389a-09f8-4451-b3ce-9950e5d56444",
-    "indexed": true,
-    "name": "WorkIntake",
-    "readOnly": false,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "Title",
-      "listId": "d158d1f7-f574-43a8-b2e2-c29ef58d765d"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "DateDue",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "900d2b23-c62d-4a4b-9870-e1c4f9d31a01",
-    "indexed": false,
-    "name": "DateDue",
-    "readOnly": false,
-    "required": false,
-    "dateTime": {
-      "displayAs": "standard",
-      "format": "dateOnly"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "DateCommitted",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "e81e698c-3013-43b0-8d2d-56a4eabe17e4",
-    "indexed": false,
-    "name": "DateCommitted",
-    "readOnly": false,
-    "required": false,
-    "dateTime": {
-      "displayAs": "standard",
-      "format": "dateOnly"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "Scope and constraints",
-    "displayName": "Scope",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "943cbc45-076e-47a8-9320-b2e310de648e",
-    "indexed": false,
-    "name": "Scope",
-    "readOnly": false,
-    "required": false,
-    "text": {
-      "allowMultipleLines": true,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 6,
-      "textType": "richText"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "DateClosed",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "2e368f6d-0ef6-4b4e-b1fc-58075f811bf0",
-    "indexed": false,
-    "name": "DateClosed",
-    "readOnly": false,
-    "required": false,
-    "dateTime": {
-      "displayAs": "standard",
-      "format": "dateOnly"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Start",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "6374d96e-fa2c-4b34-a62a-38c5efe584e6",
-    "indexed": false,
-    "name": "DateStart",
-    "readOnly": false,
-    "required": false,
-    "dateTime": {
-      "displayAs": "standard",
-      "format": "dateOnly"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "CycleTime",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "3e54fa26-4de7-426a-ab3f-ee1a44e9ee52",
-    "indexed": false,
-    "name": "CycleTime",
-    "readOnly": true,
-    "required": false,
-    "calculated": {
-      "formula": "=DateClosed-Start",
-      "outputType": "number"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "ID",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "1d22ea11-1e32-424e-89ab-9fedbadb6ce1",
-    "indexed": false,
-    "name": "ID",
-    "readOnly": true,
-    "required": false
-  },
-  {
-    "columnGroup": "_Hidden",
-    "description": "",
-    "displayName": "Content Type",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "c042a256-787d-4a6f-8a8a-cf6ab767f12d",
-    "indexed": false,
-    "name": "ContentType",
-    "readOnly": false,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Modified",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f",
-    "indexed": false,
-    "name": "Modified",
-    "readOnly": true,
-    "required": false,
-    "dateTime": {
-      "displayAs": "default",
-      "format": "dateTime"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Created",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "8c06beca-0777-48f7-91c7-6da68bc07b69",
-    "indexed": false,
-    "name": "Created",
-    "readOnly": true,
-    "required": false,
-    "dateTime": {
-      "displayAs": "default",
-      "format": "dateTime"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Created By",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "1df5e554-ec7e-46a6-901d-d85a3881cb18",
-    "indexed": false,
-    "name": "Author",
-    "readOnly": true,
-    "required": false,
-    "personOrGroup": {
-      "allowMultipleSelection": false,
-      "displayAs": "nameWithPresence",
-      "chooseFromType": "peopleAndGroups"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Modified By",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "d31655d1-1d5b-4511-95a1-7a09e9b75bf2",
-    "indexed": false,
-    "name": "Editor",
-    "readOnly": true,
-    "required": false,
-    "personOrGroup": {
-      "allowMultipleSelection": false,
-      "displayAs": "nameWithPresence",
-      "chooseFromType": "peopleAndGroups"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Version",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "dce8262a-3ae9-45aa-aab4-83bd75fb738a",
-    "indexed": false,
-    "name": "_UIVersionString",
-    "readOnly": true,
-    "required": false,
-    "text": {
-      "allowMultipleLines": false,
-      "appendChangesToExistingText": false,
-      "linesForEditing": 0,
-      "maxLength": 255
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Attachments",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "67df98f4-9dec-48ff-a553-29bece9c5bf4",
-    "indexed": false,
-    "name": "Attachments",
-    "readOnly": false,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Edit",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "503f1caa-358e-4918-9094-4a2cdc4bc034",
-    "indexed": false,
-    "name": "Edit",
-    "readOnly": true,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Title",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "bc91a437-52e7-49e1-8c4e-4698904b2b6d",
-    "indexed": false,
-    "name": "LinkTitleNoMenu",
-    "readOnly": true,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Title",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "82642ec8-ef9b-478f-acf9-31f7d45fbc31",
-    "indexed": false,
-    "name": "LinkTitle",
-    "readOnly": true,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Type",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "081c6e4c-5c14-4f20-b23e-1a71ceb6a67c",
-    "indexed": false,
-    "name": "DocIcon",
-    "readOnly": true,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Item Child Count",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "b824e17e-a1b3-426e-aecf-f0184d900485",
-    "indexed": false,
-    "name": "ItemChildCount",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "ItemChildCount",
-      "listId": "",
-      "primaryLookupColumnId": "ID"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Folder Child Count",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "960ff01f-2b6d-4f1b-9c3f-e19ad8927341",
-    "indexed": false,
-    "name": "FolderChildCount",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "FolderChildCount",
-      "listId": "",
-      "primaryLookupColumnId": "ID"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Label setting",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "ccc1037f-f65e-434a-868e-8c98af31fe29",
-    "indexed": false,
-    "name": "_ComplianceFlags",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "ComplianceFlags",
-      "listId": "",
-      "primaryLookupColumnId": "ID"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Retention label",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "d4b6480a-4bed-4094-9a52-30181ea38f1d",
-    "indexed": false,
-    "name": "_ComplianceTag",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "ComplianceTag",
-      "listId": "",
-      "primaryLookupColumnId": "ID"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Retention label Applied",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "92be610e-ddbb-49f4-b3b1-5c2bc768df8f",
-    "indexed": false,
-    "name": "_ComplianceTagWrittenTime",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "ComplianceTagWrittenTime",
-      "listId": "",
-      "primaryLookupColumnId": "ID"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Label applied by",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "418d7676-2d6f-42cf-a16a-e43d2971252a",
-    "indexed": false,
-    "name": "_ComplianceTagUserId",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "ComplianceTagUserId",
-      "listId": "",
-      "primaryLookupColumnId": "ID"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "Item is a Record",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "8382d247-72a9-44b1-9794-7b177edc89f3",
-    "indexed": false,
-    "name": "_IsRecord",
-    "readOnly": true,
-    "required": false
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "App Created By",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "6bfaba20-36bf-44b5-a1b2-eb6346d49716",
-    "indexed": false,
-    "name": "AppAuthor",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "Title",
-      "listId": "AppPrincipals"
-    }
-  },
-  {
-    "columnGroup": "Custom Columns",
-    "description": "",
-    "displayName": "App Modified By",
-    "enforceUniqueValues": false,
-    "hidden": false,
-    "id": "e08400f3-c779-4ed2-a18c-ab7f34caa318",
-    "indexed": false,
-    "name": "AppEditor",
-    "readOnly": true,
-    "required": false,
-    "lookup": {
-      "allowMultipleValues": false,
-      "allowUnlimitedLength": false,
-      "columnName": "Title",
-      "listId": "AppPrincipals"
-    }
-  }
-]
+  ],
+  "count": 43
+}

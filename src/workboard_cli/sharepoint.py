@@ -28,13 +28,23 @@ def get_list_columns(client, site_id, list_id):
     return client.get_all(f"/sites/{site_id}/lists/{list_id}/columns")
 
 
-def get_list_items(client, site_id, list_id, limit=None, expand="fields"):
-    params = {"expand": expand}
+def get_list_items(client, site_id, list_id, limit=None, field_names=None):
+    params = {}
+    if field_names:
+        select = ",".join(field_names)
+        params["expand"] = f"fields($select={select})"
+    else:
+        params["expand"] = "fields"
     if limit:
         params["$top"] = limit
     return client.get_all(f"/sites/{site_id}/lists/{list_id}/items", params=params)
 
 
-def get_list_item(client, site_id, list_id, item_id, expand="fields"):
-    params = {"expand": expand}
+def get_list_item(client, site_id, list_id, item_id, field_names=None):
+    params = {}
+    if field_names:
+        select = ",".join(field_names)
+        params["expand"] = f"fields($select={select})"
+    else:
+        params["expand"] = "fields"
     return client.get(f"/sites/{site_id}/lists/{list_id}/items/{item_id}", params=params)

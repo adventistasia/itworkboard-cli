@@ -9,6 +9,12 @@ pip install .
 workboard --help
 ```
 
+## Uninstall
+
+```bash
+pip uninstall workboard-cli
+```
+
 ## Setup
 
 1. Copy `config/workboard.example.yaml` to `config/local.yaml`

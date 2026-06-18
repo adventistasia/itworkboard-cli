@@ -1,47 +1,25 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
 *.egg-info/
 dist/
 build/
-*.egg
-.eggs/
 
-# Virtual environments
-.env/
-.venv/
-venv/
-env/
-ENV/
+# Config
+config/local.yaml
 
-# Testing and coverage
-.pytest_cache/
-coverage/
-.coverage
-htmlcov/
-.cache/
-
-# Ruff / linting
-.ruff_cache/
+# Discovery output
+discovery/
 
 # IDE
-.idea/
 .vscode/
-*.swp
-*.swo
-*~
+.idea/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Project specific
-*.log
+# Environment
 .env
-.env.local
-secrets/
-credentials/
-*.token
-config/local.yaml
+.venv/
+venv/

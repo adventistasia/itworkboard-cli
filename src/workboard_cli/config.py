@@ -3,6 +3,8 @@ from pathlib import Path
 
 import yaml
 
+from workboard_cli.errors import WorkboardError
+
 DEFAULTS_PATH = Path("config/workboard.defaults.yaml")
 LOCAL_PATHS = [
     Path("config/local.yaml"),
@@ -23,8 +25,10 @@ def _deep_merge(base, overlay):
 
 def load_config(path=None):
     if not DEFAULTS_PATH.exists():
-        raise FileNotFoundError(
-            f"Defaults file not found: {DEFAULTS_PATH}"
+        raise WorkboardError(
+            "config_error",
+            f"Defaults file not found: {DEFAULTS_PATH}",
+            "Ensure config/workboard.defaults.yaml exists in the project root.",
         )
 
     with open(DEFAULTS_PATH, encoding="utf-8") as f:
@@ -47,9 +51,10 @@ def load_config(path=None):
     list_name = os.environ.get("WORKBOARD_LIST_NAME") or config.get("primary_list_name")
 
     if not tenant_id or not client_id:
-        raise ValueError(
+        raise WorkboardError(
+            "config_error",
             "Missing credentials: set WORKBOARD_TENANT_ID and WORKBOARD_CLIENT_ID "
-            "env vars, or create config/local.yaml"
+            "env vars, or create config/local.yaml",
         )
 
     return {

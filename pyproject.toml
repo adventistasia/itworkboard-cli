@@ -17,7 +17,8 @@ workboard = "workboard_cli.cli:app"
 [project.optional-dependencies]
 dev = [
   "pytest>=8",
-  "ruff>=0.5"
+  "ruff>=0.5",
+  "responses>=0.25"
 ]
 
 [tool.pytest.ini_options]

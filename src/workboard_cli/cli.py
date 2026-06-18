@@ -1,5 +1,7 @@
 import json
 import logging
+import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -44,6 +46,7 @@ query_app = typer.Typer(help="Operational query commands")
 summary_app = typer.Typer(help="Summary commands")
 agent_app = typer.Typer(help="Agent interface commands")
 config_app = typer.Typer(help="Configuration commands")
+self_app = typer.Typer(help="Self-inspection commands")
 
 app.add_typer(auth_app, name="auth")
 app.add_typer(site_app, name="site")
@@ -54,6 +57,7 @@ app.add_typer(query_app, name="query")
 app.add_typer(summary_app, name="summary")
 app.add_typer(agent_app, name="agent")
 app.add_typer(config_app, name="config")
+app.add_typer(self_app, name="self")
 
 
 def _error_exit(e: WorkboardError, code=1):
@@ -418,6 +422,32 @@ def summary_manager(
             print(json.dumps(envelope, indent=2))
     except WorkboardError as e:
         _error_exit(e)
+
+
+@self_app.command("path")
+def self_path():
+    """Show where the CLI is installed."""
+    print(Path(sys.argv[0]).resolve())
+
+
+@self_app.command("install")
+def self_install():
+    """Add the CLI directory to the user PATH."""
+    scripts_dir = Path(sys.argv[0]).resolve().parent
+    path_entry = str(scripts_dir)
+    env_path = os.environ.get("PATH", "")
+    if path_entry in env_path.split(os.pathsep):
+        print(f"Already on PATH: {path_entry}")
+        return
+    import subprocess
+    proc = subprocess.run(
+        ["powershell", "-NoProfile", "-Command",
+         f"[Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';{path_entry}', 'User')"],
+        capture_output=True, text=True, check=True
+    )
+    os.environ["PATH"] = env_path + os.pathsep + path_entry
+    print(f"Added to PATH: {path_entry}")
+    print("Restart your terminal for the change to take full effect.")
 
 
 @agent_app.command("query")

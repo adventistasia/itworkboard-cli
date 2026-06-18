@@ -23,3 +23,7 @@ Thumbs.db
 .env
 .venv/
 venv/
+
+# Observations
+observations/
+~/.local/share/workboard/observations/

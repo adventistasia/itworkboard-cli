@@ -16,6 +16,7 @@ from workboard_cli.config import load_config
 from workboard_cli.errors import WorkboardError
 from workboard_cli.graph_client import GraphClient
 from workboard_cli.normalize import normalize_item
+from workboard_cli.observations import capture, make_on_gap
 from workboard_cli.output import build_envelope, build_summary_envelope
 from workboard_cli.queries import (
     filter_blocked,
@@ -35,6 +36,16 @@ from workboard_cli.sharepoint import (
 from workboard_cli.summaries import build_summary, render_markdown_summary
 
 logger = logging.getLogger("workboard_cli")
+
+
+def _crash_hook(exc_type, exc_value, exc_tb):
+    if not issubclass(exc_type, WorkboardError):
+        capture("crash", type=str(exc_type.__name__), message=str(exc_value))
+    sys.__excepthook__(exc_type, exc_value, exc_tb)
+
+
+sys.excepthook = _crash_hook
+
 
 app = typer.Typer(help="Read-only CLI for querying the SharePoint IT WorkBoard")
 auth_app = typer.Typer(help="Authentication commands")
@@ -61,6 +72,8 @@ app.add_typer(self_app, name="self")
 
 
 def _error_exit(e: WorkboardError, code=1):
+    capture("error", code=e.code, message=e.message, action=e.action,
+            command=" ".join(sys.argv[1:]))
     msg = {"status": "error", "error": e.to_dict()}
     print(json.dumps(msg, indent=2))
     raise typer.Exit(code)
@@ -69,7 +82,7 @@ def _error_exit(e: WorkboardError, code=1):
 def _get_client():
     cfg = load_config()
     token = get_token()
-    return cfg, GraphClient(token)
+    return cfg, GraphClient(token, on_gap=make_on_gap())
 
 
 def _fetch_items(cfg, client, list_name, limit=None):
@@ -114,6 +127,7 @@ def main(
     ),
     verbose: bool = typer.Option(False, "--verbose", help="Enable verbose output"),
 ):
+    capture("invocation", command=" ".join(sys.argv[1:]))
     if verbose:
         logging.basicConfig(level=logging.INFO)
         logger.info("Verbose logging enabled")

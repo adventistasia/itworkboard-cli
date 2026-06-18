@@ -1,4 +1,5 @@
 import time
+from typing import Callable, Optional
 
 import requests
 
@@ -10,8 +11,9 @@ class GraphClient:
     MAX_RETRIES = 3
     RETRY_DELAY = 1
 
-    def __init__(self, token):
+    def __init__(self, token, on_gap: Optional[Callable] = None):
         self.session = requests.Session()
+        self._on_gap = on_gap
         self.session.headers.update({
             "Authorization": f"Bearer {token}",
             "Accept": "application/json",
@@ -51,7 +53,12 @@ class GraphClient:
     def get(self, path, params=None):
         url = f"{self.BASE}{path}"
         for attempt in range(self.MAX_RETRIES):
+            t0 = time.monotonic()
             resp = self.session.get(url, params=params)
+            elapsed = int((time.monotonic() - t0) * 1000)
+            if self._on_gap:
+                self._on_gap(path, elapsed, status_code=resp.status_code,
+                             error="rate_limited" if resp.status_code == 429 else None)
             if resp.status_code == 429 and attempt < self.MAX_RETRIES - 1:
                 time.sleep(self.RETRY_DELAY * (attempt + 1))
                 continue

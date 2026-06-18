@@ -160,6 +160,63 @@ The `manager_summary` intent returns markdown with:
 | `not_found` | Item ID not found | Check the item ID |
 | `unsupported_intent` | Unknown agent intent | Use an approved intent from the list |
 
+## Observation capture
+
+The CLI automatically logs raw commands, errors, and slow requests to `~/.local/share/workboard/observations/`. As the agent, you capture the **context and outcome** that the CLI can't see — the conversation.
+
+### When to capture
+
+Log an observation entry when **any** of these triggers fire:
+
+- **Intent mismatch** — user asks for something that takes 2+ CLI commands or isn't supported at all
+- **Error encountered** — CLI returns an error the user needs help with
+- **Warning in output** — you see unknown stage values or unmapped fields in CLI output
+- **User asks "can I..."** — unprompted feature request
+- **User rephrases or repeats** — same question 2+ different ways, meaning your first answer missed
+- **User post-processes output** — asks to reformat, export, or combine results manually
+- **User seems satisfied or not** — you infer the outcome from their next message
+
+### What to capture
+
+Write to `observations/workboard-agent-observations.jsonl` in the same observation directory. Each line is a JSON object with three fields:
+
+```json
+{
+  "event": "agent_observation",
+  "ts": "2026-06-18T12:00:00Z",
+  "criterion": "intent_mismatch",
+  "detail": "user asked for items_by_project which is not an approved intent",
+  "context": "user_question: show me all items for the Galaxy project. agent_plan: run query open, then filter manually. cli_command: workboard query open. attempts: 1",
+  "outcome": "resolved_partial",
+  "outcome_note": "user got list of all open items, had to manually filter for Galaxy"
+}
+```
+
+| Field | Values |
+|---|---|
+| `criterion` | `intent_mismatch` / `error` / `warning` / `feature_request` / `rephrase` / `post_process` / `negative_signal` |
+| `outcome` | `resolved` / `resolved_partial` / `unresolved` / `abandoned` / `unknown` |
+
+### Where to write
+
+```python
+import json
+from pathlib import Path
+
+obs_dir = Path.home() / ".local" / "share" / "workboard" / "observations"
+obs_dir.mkdir(parents=True, exist_ok=True)
+with open(obs_dir / "workboard-agent-observations.jsonl", "a") as f:
+    f.write(json.dumps(entry) + "\n")
+```
+
+### How to infer outcome
+
+- User moves to a new topic or says "thanks" → `resolved`
+- User immediately asks a follow-up on the same topic → `resolved_partial` (previous answer didn't fully meet the need)
+- User rephrases the same question → `unresolved`
+- User says "never mind" or changes subject entirely after a failure → `abandoned`
+- Unsure → `unknown` (better than guessing)
+
 ## Workflow patterns
 
 ### "What's on the board?"

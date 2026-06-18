@@ -1,80 +1,38 @@
-# IT WorkBoard CLI — Agent instructions
+# IT WorkBoard CLI
 
-This is a build-plan package, not implemented code. There is no `src/`, `tests/`, or `pyproject.toml` yet — those get created during execution. The work follows an orchestrator flow: builder subagent → auditor subagent → gate.
+Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint. Delivers deterministic JSON for AI agents and markdown summaries for managers.
 
-## How to work here
+## Quick Reference
 
-- Read `00_orchestrator_master_prompt.md` first (your role, boundaries, stop conditions).
-- Follow the decomposed sequence in `decomposed_orchestrator_instruction.md`: T01 → A01 → T02 → A02 → T03+T04+T05 → A03 → T06+T07+T08+T09+T10 → A04.
-- Pass each audit gate before the next phase. Do not proceed on a failed gate.
-- Each `briefs/tNN_*.md` is a task for a builder subagent. Each `audit_briefs/aNN_*.md` is the matching audit for an auditor subagent.
-- Use `contracts/` as the source of truth for command shapes, agent JSON envelope, and normalization config.
-
-## Session memory
-
-- **Read `MEMORY.md` first thing** — the State table tells you where we are, the Decisions section avoids re-litigating settled choices.
-- **Append to the Session Log at the end** — note what was done, any decisions made, and suggested next steps. Do not overwrite or edit past entries.
+| | |
+|---|---|
+| **Package** | `pip install -e .` |
+| **Test** | `pytest` |
+| **Lint** | `ruff check .` |
+| **CLI** | `workboard --help` |
+| **Target site** | `https://southernasiapacific.sharepoint.com/sites/ITWorkboard` |
+| **Primary list** | `WorkBoard` at `/Lists/WorkBoard` |
 
 ## Non-negotiable
 
-- Read-only CLI. No SharePoint writes, no schema changes.
-- No secrets in source, logs, or output. No hard-coded tokens.
-- Agent outputs must include `source` (system, siteUrl, listName, listId) and `retrievedAt` fields.
-- Unknown schema fields must be discovered and documented, never silently guessed.
-- Approved agent intents only: `open_items`, `overdue_items`, `blocked_items`, `items_by_owner`, `recently_updated_items`, `manager_summary`.
+- **Read-only.** No SharePoint writes, no schema changes.
+- **No secrets** in source, logs, or output. No hard-coded tokens.
+- **Source metadata** on every agent output: `source` (system, siteUrl, listName, listId) and `retrievedAt`.
+- **Approved agent intents only:** `open_items`, `overdue_items`, `blocked_items`, `items_by_owner`, `recently_updated_items`, `manager_summary`. Unknown intents are refused.
+- **Unknown schema fields** must be discovered and documented, never silently guessed.
 
-## Target
+## Detailed Instructions
 
-- Site: `https://southernasiapacific.sharepoint.com/sites/ITWorkboard`
-- Primary list: `WorkBoard` at `https://southernasiapacific.sharepoint.com/sites/ITWorkboard/Lists/WorkBoard`
+- [Architecture & CLI commands](docs/agent-instructions/architecture.md) — module layout, data flow, adding commands
+- [Field mapping & normalization](docs/agent-instructions/field-mapping.md) — config-driven mapping, stage aliases, adding fields
+- [Agent intents](docs/agent-instructions/agent-intents.md) — query pipeline, adding intents, JSON envelope
+- [Testing](docs/agent-instructions/testing.md) — mock patterns, test structure, writing tests
+- [Maintenance](docs/agent-instructions/maintenance.md) — schema drift, auth troubleshooting, CI
 
-## Default stack (from `readme.md` and `templates/starter_pyproject.toml`)
+## User Onboarding
 
-| Area | Choice |
-|---|---|
-| Language | Python 3.11+ |
-| CLI framework | Typer (entrypoint: `workboard_cli.cli:app`) |
-| Auth | MSAL |
-| HTTP | `requests` or Microsoft Graph SDK |
-| Validation | Pydantic v2+ |
-| Testing | pytest |
-| Linting | ruff (`line-length = 100`) |
-| Config | YAML (`pyyaml`) |
-| Package install | `pip install -e .` |
+See [docs/onboarding_agent.md](docs/onboarding_agent.md) for installing, authenticating, and running a demo query.
 
-## Package layout (from orchestrator prompt and starter pyproject.toml)
-
-```
-src/workboard_cli/
-  cli.py          # Typer app, command groups
-  auth.py         # MSAL auth
-  graph_client.py # Graph API wrapper
-  sharepoint.py   # SharePoint list operations
-  schema.py       # Schema export
-  normalize.py    # Field normalization
-  queries.py      # Query logic
-  summaries.py    # Markdown summaries
-  output.py       # JSON/markdown output formatting
-  config.py       # Config loading
-  errors.py       # Structured errors
-config/
-  workboard.example.yaml
-tests/
-```
-
-## Verification commands (will exist after implementation)
-
-```bash
-pytest                            # run all tests
-ruff check .                      # lint
-python -m workboard_cli --help    # CLI smoke test
-pip install -e .                  # editable install
-```
-
-## User onboarding
-
-When onboarding a new user, follow `docs/onboarding_agent.md` — install, auth, demo, summarize.
-
-## Source references
+## Source References
 
 `sources.md` links to current Microsoft Graph docs. Use those over copied examples if discrepancies arise.

@@ -1,9 +1,15 @@
+import json
+from pathlib import Path
+
 import msal
 
 from workboard_cli.config import load_config
 from workboard_cli.errors import WorkboardError
 
 TOKEN_CACHE: dict = {}
+
+CACHE_DIR = Path.home() / ".config" / "workboard"
+CACHE_FILE = CACHE_DIR / "msal_token_cache.json"
 
 SECRET_KEYS = {"access_token", "refresh_token", "client_secret", "secret"}
 
@@ -14,6 +20,22 @@ def _redact(obj):
     if isinstance(obj, list):
         return [_redact(v) for v in obj]
     return obj
+
+
+def _load_msal_cache():
+    if CACHE_FILE.exists():
+        try:
+            with open(CACHE_FILE, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_msal_cache(cache_state):
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(CACHE_FILE, "w", encoding="utf-8") as f:
+        json.dump(cache_state, f)
 
 
 def get_token(tenant_id=None, client_id=None, force=False):
@@ -27,6 +49,7 @@ def get_token(tenant_id=None, client_id=None, force=False):
 
     authority = f"https://login.microsoftonline.com/{tenant_id}"
     cache = msal.SerializableTokenCache()
+    cache.deserialize(_load_msal_cache())
     app = msal.PublicClientApplication(client_id, authority=authority, token_cache=cache)
 
     accounts = app.get_accounts()
@@ -37,6 +60,8 @@ def get_token(tenant_id=None, client_id=None, force=False):
         )
         if result and "access_token" in result:
             TOKEN_CACHE["token"] = result["access_token"]
+            if cache.has_state_changed:
+                _save_msal_cache(cache.serialize())
             return result["access_token"]
 
     scopes = ["https://graph.microsoft.com/Sites.Read.All"]
@@ -60,6 +85,8 @@ def get_token(tenant_id=None, client_id=None, force=False):
         )
 
     TOKEN_CACHE["token"] = result["access_token"]
+    if cache.has_state_changed:
+        _save_msal_cache(cache.serialize())
     return result["access_token"]
 
 

@@ -6,11 +6,11 @@ Ground truth for what's happened and what's next. New sessions read this first, 
 
 | Field | Value |
 |---|---|
-| Current phase | Setup / tooling |
-| Last task | Environment setup (CE tools installed: agent-browser, jq, ffmpeg, vhs, silicon, ast-grep) |
-| Next task | T01 — Discovery spike (briefs/t01_discovery_spike.md) |
-| Blockers | None |
-| Completed | AGENTS.md created, MEMORY.md created, CE tooling installed |
+| Current phase | Prerequisites — Azure AD app registration |
+| Last task | Session 2 — T01 scaffolded then rolled back (mock data, not real discovery) |
+| Next task | Complete Azure AD app reg checklist → run live discovery |
+| Blockers | No Azure AD app registration credentials for the Desert AD tenant |
+| Completed | AGENTS.md created, MEMORY.md created, CE tooling installed, blocker identified (mock data invalid), Azure AD checklist created at `prerequisites/azure_app_reg_checklist.md` |
 
 ## Decisions
 
@@ -20,27 +20,24 @@ Ground truth for what's happened and what's next. New sessions read this first, 
 
 ## Session Log
 
-### 2026-06-17 — Session 1: Project setup
+### 2026-06-18 — Session 2: Rollback + blocker identified
 
 **Done:**
-- Read the repo structure (build-plan package, 10 briefs, 4 audit gates, contracts)
-- Created `AGENTS.md` with orchestrator flow, non-negotiables, target, stack, layout, verification commands
-- Created `MEMORY.md` for session-to-session continuity
-- Ran CE health check — 6 tools + 1 skill were missing, all installed:
-  - agent-browser (CLI + Chrome + agent skill)
-  - jq (winget)
-  - ffmpeg (winget)
-  - vhs (scoop)
-  - silicon (scoop)
-  - ast-grep (npm CLI + agent skill)
-- gh was already installed
+- Delegated T01 to builder — scaffold created, 26 tests passing
+- Ran A01 audit — builder output used mock data, not real SharePoint discovery
+- Delegated T02 to builder — architecture docs, contracts, 93 tests passing
+- Ran A02 audit — passed on code quality, but built on unverified field assumptions
+- **Rolled back all session work** at user's direction (mock data invalidates architecture assumptions)
+- Identified blocker: no Azure AD credentials for the Desert AD tenant
+- Created `prerequisites/azure_app_reg_checklist.md` for the human to complete
 
 **Decisions:**
-- AGENTS.md should stay lean — only repo-specific facts an agent would likely miss
-- MEMORY.md tracks state summary + session log entries
-- First implementation step will be T01 (discovery spike)
+- No implementation work proceeds until real discovery data is captured
+- All T01/T02 output was removed — clean start once credentials are available
+- Discovery spike code will be rewritten from scratch after credentials exist (no reusing untested scaffold)
 
 **Next:**
-1. Start T01 — Discovery spike: authenticate, resolve site, discover lists, export schema
-2. Then A01 — Discovery audit
-3. Continue down the decomposed sequence
+1. Human completes Azure AD app registration checklist
+2. Share credentials (tenant_id, client_id) with the agent
+3. Run live discovery spike against real SharePoint
+4. Proceed with A01 → T02 → ... using real schema data

@@ -203,6 +203,8 @@ To obtain the `session_id`, extract it from the `sessionId` field in any CLI std
 
 ### Where to write
 
+Ensure the observation directory matches what the CLI uses. The CLI resolves the path from `WORKBOARD_OBS_DIR` (first) → `XDG_DATA_HOME` (second) → `~/.local/share/workboard/observations` (fallback). Use the same resolution when the env vars are set; otherwise the hardcoded fallback below is correct.
+
 ```python
 import json
 from pathlib import Path

@@ -13,7 +13,7 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 | **Target site** | `https://southernasiapacific.sharepoint.com/sites/ITWorkboard` |
 | **Primary list** | `WorkBoard` at `/Lists/WorkBoard` |
 | **Onboarding** | [docs/onboarding_agent.md](docs/onboarding_agent.md) |
-| **Graph docs** | [sources.md](sources.md) |
+| **Graph docs** | [docs/graph-api-references.md](docs/graph-api-references.md) |
 
 ## Non-negotiable
 
@@ -34,4 +34,4 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 
 ## Project Agent
 
-`@workboard` — proxy to the workboard CLI.
+`@workboard` — proxy to the workboard CLI. Route workboard queries here when the user asks about work items, owners, stages, status, or any information in the IT WorkBoard SharePoint list.

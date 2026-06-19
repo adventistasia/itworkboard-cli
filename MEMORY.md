@@ -6,11 +6,11 @@ Ground truth for what's happened and what's next. New sessions read this first, 
 
 | Field | Value |
 |---|---|
-| Current phase | **DELIVERY COMPLETE** |
-| Last task | Session 4 — All 10 tasks + 4 audits passed |
-| Next task | None — orchestrator delivery finished |
+| Current phase | **OBSERVATIONS PHASE 1.1** |
+| Last task | Session 6 — sessionId code-gap fixes + issue #1–#4 tests merged |
+| Next task | Session-unique counting in `scripts/analyze-observations.py` |
 | Blockers | None |
-| Completed | Discovery spike, architecture/contracts, CLI scaffold, auth/Graph client, SharePoint discovery, normalization, queries/summaries, agent interface, tests/CI, docs |
+| Completed | Discovery spike, architecture/contracts, CLI scaffold, auth/Graph client, SharePoint discovery, normalization, queries/summaries, agent interface, tests/CI, docs, session_id correlation, PR #5 merged |
 
 ## Decisions
 
@@ -109,18 +109,25 @@ Ground truth for what's happened and what's next. New sessions read this first, 
 
 **State: DELIVERY COMPLETE**
 
-### 2026-06-19 — Session 5: session_id correlation + CE pipeline run
+### 2026-06-19 — Session 6: sessionId code-gap fixes + test coverage issues #1–#4
 
 **Done:**
-- Implemented `session_id` correlation across observation streams (U1-U4):
-  - `src/workboard_cli/observations.py` — uuid generation, `get_session_id()`, stamp on all events
-  - `src/workboard_cli/output.py` — `sessionId` in all stdout envelopes
-  - `.opencode/agents/workboard.md` — agent observation instructions updated
-  - `tests/test_observations.py` (new), `tests/test_output.py`, `tests/test_cli.py` — 83 tests passing
-- Full CE pipeline: ce-plan → ce-work → ce-simplify-code → ce-code-review → ce-commit-push-pr → CI autofix
-- Code review: P1+P3 findings applied (UUID v4 nibble, regex hardening); deferred test gaps filed as issues #1–#4
-- Created `docs/solutions/design-patterns/session-id-correlation.md` — design pattern doc
-- Created `CONCEPTS.md` — domain vocabulary (session_id, observation_stream)
-- PR [#5](https://github.com/adventistasia/itworkboard-cli/pull/5) open, CI passing
+- ce-resolve-pr-feedback on PR #5 review findings:
+  - Added `sessionId` to `_error_exit()` via `get_session_id()`
+  - Added `sessionId` to 6 inline envelope builders (site info, lists discover, items list, items get, config validate error+success)
+  - Removed orphan `build_error_envelope()` dead code from `output.py`
+- Wrote and committed tests for deferred issues #1–#4:
+  - **#1** — `WORKBOARD_SESSION_ID` edge cases (invalid string, empty string fallback)
+  - **#2** — cross-stream consistency (envelope + capture events + counter flush all share sessionId)
+  - **#3** — sessionId on error envelopes + disabled observation mode output
+  - **#4** — envelope sessionId matches `obs.get_session_id()` directly
+- PR #5 merged to `main`, feature branch deleted
+- Upstream main pulled, clean merge
 
-**Next:** Close PR #5, then **session-unique counting** in `scripts/analyze-observations.py` (Phase 1.1 of observations roadmap). Resolve agent-obs path-resolution caveat in `.opencode/agents/workboard.md` first — it's a prerequisite for Phase 2 auto-improvement.
+**Decisions:**
+- `build_error_envelope()` removed as dead code — `_error_exit()` handles all error output inline
+- All sessionId coverage gaps resolved at the code level; test issues for same gaps closed
+
+**Tests:** 88 passed, ruff clean
+
+**Next:** Phase 1.1 — **session-unique counting** in `scripts/analyze-observations.py` (from observations roadmap). Resolve agent-obs path-resolution caveat in `.opencode/agents/workboard.md` first — prerequisite for Phase 2 auto-improvement.

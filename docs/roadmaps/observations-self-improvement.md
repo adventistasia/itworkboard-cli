@@ -72,3 +72,62 @@ Draft (2026-06-19). Start with Phase 1 before moving to Phase 2.
 - **Outcome inference is ~70% accurate** — track aggregate trends, not per-interaction accuracy.
 - **Auto-PRs destroy trust if they merge silently** — always require human approval, always include rollback path.
 - **Cadence decay** — weekly review won't sustain. Phase 2 automation exists precisely because human cadence doesn't scale.
+
+## Using CE Skills
+
+Compound Engineering skills ([docs](https://every.to/guides/compound-engineering), [plugin repo](https://github.com/EveryInc/compound-engineering-plugin)) provide structured workflows for each stage of this roadmap. Load the relevant skill when the trigger condition is met — each one resolves what to do next, then hands off to the next skill in the chain.
+
+### Skill Reference Table
+
+| Skill | Phase(s) | Trigger — load this when… | What it produces |
+|---|---|---|---|
+| **ce-ideate** | All | You need ideas for what to work on next, or want to explore surprising directions before picking one. | Ranked ideation artifact in `docs/ideation/` — candidate directions with rejection rationale, survivors, and basis citations. |
+| **ce-brainstorm** | 1, 2, 3 | You have an idea or candidate direction and need to resolve scope, success criteria, and product decisions before planning. | Requirements document in `docs/brainstorms/` — user-facing behavior, scope boundaries, acceptance criteria, trade-offs. |
+| **ce-agent-native-architecture** | 2, 3 | You're designing a system where agents read, write, or act autonomously — auto-PR drafting, session-context injection, or cross-session behavior updates. | Architecture decisions for agent-native features: which agents exist, their permissions, handoff protocols, observability, and safety boundaries. |
+| **ce-plan** | 1, 2, 3 | You have clear requirements (from brainstorm or direct knowledge) and need to decompose the work into implementable units with files, dependencies, risks, and test scenarios. | Implementation plan in `docs/plans/` — implementation units with U-IDs, approach, file lists, test scenarios, verification criteria. |
+| **ce-work** | 1, 2 | You have a plan (or a well-defined bare-prompt task) and want to execute — implement, test, and commit. | Implemented code, passing tests, incremental commits on a feature branch. |
+| **ce-code-review** | 1, 2, 3 | Before opening a PR, or after a batch of implementation is complete. Loads 6-14 reviewer personas against the diff. | Structured review report with severity-gated findings (P0-P3), deduplicated, validated, and optionally auto-fixed. |
+| **ce-commit-push-pr** | 1, 2 | You have committed work on a branch and want to open a PR with a value-first description. | PR on GitHub with an adaptive description scaled to change depth. |
+| **ce-compound** | 1, 2, 3 | A non-trivial problem has just been solved — a bug found deep in a module, a surprising edge case, a hard-won lesson. | Learning doc in `docs/solutions/<category>/` with YAML frontmatter, root cause, solution, and prevention. |
+| **ce-compound-refresh** | 1, 2, 3 | An older `docs/solutions/` doc may be stale, contradicted by new learnings, or overlapping with a new solution. | Refreshed, consolidated, or archived learning docs — duplicates merged, drift corrected. |
+| **ce-optimize** | 2, 3 | You have a measurable knob (threshold, cutoff, weight) and want to find its best value through parallel experiments. | Experiment log — baseline, batch results, winning configuration with delta. |
+| **ce-debug** | 1, 2, 3 | Observation capture stops working, the analysis script crashes, auto-PR drafts malformed content, embedding routing returns wrong intents. | Debug summary with causal chain, confirmed root cause, test-first fix, and prevention recommendations. |
+| **ce-simplify-code** | 1, 2, 3 | After implementing a cluster of related changes (especially clustering logic, promotion pipelines, or embedding routing) when the diff is ≥30 lines. | Simplified code — deduplicated utilities, consolidated abstractions, dead code removed. Behavior verified via tests. |
+| **ce-strategy** | All | The roadmap itself needs updating — a phase scope changes, a new track emerges, or you're aligning work with product direction. | Updated `STRATEGY.md` — target problem, approach, persona, metrics, and tracks of work. |
+| **ce-sessions** | All | Before starting a new phase (or resuming after a break) — check if prior sessions already tried the approach or hit dead ends. | Structured digest of prior agent sessions: what was tried, what didn't work, key decisions. |
+| **ce-demo-reel** | 1, 2 | Shipping CLI changes — capture visual proof of the `observations stats` output or slow-query warning in the PR description. | GIF, terminal recording, or screenshot embedded in the PR description showing before/after behavior. |
+
+### Recommended Flow Per Phase
+
+```
+Phase 1 (Quick Wins):
+  ce-ideate → ce-brainstorm → ce-plan → ce-work → ce-code-review → ce-commit-push-pr → ce-compound
+  ├── ce-debug (if pipeline breaks)
+  ├── ce-simplify-code (after clustering logic lands)
+  └── ce-demo-reel (for CLI output evidence in PR)
+
+Phase 2 (Closed Loop):
+  ce-ideate → ce-brainstorm → ce-agent-native-architecture → ce-plan → ce-work → ce-code-review → ce-compound
+  ├── ce-optimize (tune promotion threshold & similarity cutoff)
+  ├── ce-debug (if auto-PR drafts are malformed)
+  ├── ce-simplify-code (after promotion pipeline stabilizes)
+  └── ce-compound-refresh (consolidate older learnings with new ones)
+
+Phase 3 (Advanced):
+  ce-brainstorm → ce-agent-native-architecture → ce-plan → ce-work → ce-code-review → ce-compound
+  ├── ce-optimize (tune embedding similarity, confidence cutoffs)
+  ├── ce-debug (embedding routing issues, outcome inference failures)
+  └── ce-simplify-code (embedding classification code)
+```
+
+### When to Skip Skills
+
+- **ce-brainstorm**: Skip when requirements are already clear (well-scoped tickets, existing spec). Go straight to `ce-plan`.
+- **ce-agent-native-architecture**: Skip for pure CLI work that doesn't involve agent autonomy. Only load when agents make decisions or write drafts.
+- **ce-optimize**: Skip when default threshold values work well enough. Only invest in systematic tuning when false positives or misses cost real time.
+- **ce-compound**: Skip for trivial fixes (typos, one-line config changes). The bar: "Would future me or a teammate benefit from searching for this?"
+- **ce-sessions**: Skip when working on a well-understood problem with no reason to believe prior attempts exist.
+
+### Pro Tip: Plan U-IDs Stabilize Cross-Skill Traceability
+
+When `ce-plan` creates implementation units with stable U-IDs (`U1`, `U2`, …), reference them when spawning `ce-work`, when reviewing with `ce-code-review` (pass `plan:<path>`), and when compounding via `ce-compound`. The IDs survive reordering and splitting, giving you unambiguous traceability from requirements → implementation → review → learning.`

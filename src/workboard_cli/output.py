@@ -48,22 +48,6 @@ def build_summary_envelope(summary, config, list_id=None):
     }
 
 
-def build_error_envelope(intent, error, config):
-    site_url = config.get("site_url", "")
-    list_name = config.get("primary_list_name", "WorkBoard")
-    return {
-        "status": "error",
-        "intent": intent,
-        "source": _build_source(site_url, list_name),
-        "retrievedAt": _now_iso(),
-        "sessionId": get_session_id(),
-        "filters": {},
-        "result": None,
-        "warnings": [],
-        "errors": [error.to_dict()],
-    }
-
-
 def _collect_warnings(items):
     all_warnings = []
     for item in items:

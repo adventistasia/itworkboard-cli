@@ -16,7 +16,7 @@ from workboard_cli.config import load_config
 from workboard_cli.errors import WorkboardError
 from workboard_cli.graph_client import GraphClient
 from workboard_cli.normalize import normalize_item
-from workboard_cli.observations import capture, make_on_gap
+from workboard_cli.observations import capture, get_session_id, make_on_gap
 from workboard_cli.output import build_envelope, build_summary_envelope
 from workboard_cli.queries import (
     filter_blocked,
@@ -74,7 +74,7 @@ app.add_typer(self_app, name="self")
 def _error_exit(e: WorkboardError, code=1):
     capture("error", code=e.code, message=e.message, action=e.action,
             command=" ".join(sys.argv[1:]))
-    msg = {"status": "error", "error": e.to_dict()}
+    msg = {"status": "error", "error": e.to_dict(), "sessionId": get_session_id()}
     print(json.dumps(msg, indent=2))
     raise typer.Exit(code)
 
@@ -168,6 +168,7 @@ def info(
         envelope = {
             "status": "ok",
             "source": _build_source(cfg["site_url"]),
+            "sessionId": get_session_id(),
             "result": result,
         }
         print(json.dumps(envelope, indent=2))
@@ -199,6 +200,7 @@ def lists_discover(
             "status": "ok",
             "source": _build_source(cfg["site_url"]),
             "retrievedAt": _now_iso(),
+            "sessionId": get_session_id(),
             "result": {"count": len(cleaned), "lists": cleaned},
         }
         print(json.dumps(envelope, indent=2))
@@ -246,6 +248,7 @@ def items_list(
             "status": "ok",
             "source": _build_source(cfg["site_url"], list_name, target["id"]),
             "retrievedAt": _now_iso(),
+            "sessionId": get_session_id(),
             "result": {"count": len(items), "items": items},
         }
         print(json.dumps(envelope, indent=2))
@@ -278,6 +281,7 @@ def items_get(
             "status": "ok",
             "source": _build_source(cfg["site_url"], list_name, target["id"]),
             "retrievedAt": _now_iso(),
+            "sessionId": get_session_id(),
             "result": {"item": item},
         }
         print(json.dumps(envelope, indent=2))
@@ -321,6 +325,7 @@ def config_validate(
         if mismatches:
             result = {
                 "status": "error",
+                "sessionId": get_session_id(),
                 "error": {
                     "code": "config_error",
                     "message": f"{len(mismatches)} field(s) in config not found in schema.",
@@ -332,6 +337,7 @@ def config_validate(
         else:
             result = {
                 "status": "ok",
+                "sessionId": get_session_id(),
                 "message": f"All {len(field_mappings)} field mappings validated against schema.",
             }
             print(json.dumps(result, indent=2))

@@ -3,10 +3,8 @@ import re
 from workboard_cli.output import (
     _collect_warnings,
     build_envelope,
-    build_error_envelope,
     build_summary_envelope,
 )
-from workboard_cli.errors import WorkboardError
 
 SAMPLE_CONFIG = {
     "site_url": "https://sharepoint.com/sites/Test",
@@ -46,14 +44,6 @@ def test_build_summary_envelope():
     _assert_valid_session_id(envelope)
 
 
-def test_build_error_envelope():
-    err = WorkboardError("unsupported_intent", "Bad intent.", "Use valid intent.")
-    envelope = build_error_envelope("bad_intent", err, SAMPLE_CONFIG)
-    assert envelope["status"] == "error"
-    assert envelope["errors"][0]["code"] == "unsupported_intent"
-    _assert_valid_session_id(envelope)
-
-
 def test_collect_warnings():
     warnings = _collect_warnings(SAMPLE_ITEMS)
     assert len(warnings) == 1
@@ -69,14 +59,11 @@ def test_collect_warnings_dedup():
 
 
 def test_all_envelopes_share_session_id():
-    err = WorkboardError("test", "msg.", "hint.")
     env1 = build_envelope([], "open_items", SAMPLE_CONFIG)
     env2 = build_summary_envelope({}, SAMPLE_CONFIG)
-    env3 = build_error_envelope("test", err, SAMPLE_CONFIG)
     sid = env1["sessionId"]
     assert isinstance(sid, str) and len(sid) == 36
     assert env2["sessionId"] == sid
-    assert env3["sessionId"] == sid
 
 
 def _assert_valid_session_id(envelope):

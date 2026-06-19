@@ -11,7 +11,7 @@ for the next improvement cycle.
 import argparse
 import json
 import sys
-from collections import Counter, defaultdict
+from collections import Counter
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -54,7 +54,6 @@ def report(events: list[dict]):
         print("No events found in the time window.")
         return
 
-    by_event = Counter(ev.get("event", "unknown") for ev in events)
     sessions = [ev for ev in events if ev.get("event") == "session"]
     error_events = [ev for ev in events if ev.get("event") == "error"]
     gap_events = [ev for ev in events if ev.get("event") == "interaction_gap"]
@@ -88,7 +87,6 @@ def report(events: list[dict]):
 
     if gap_events:
         print("## Interaction Gaps (slow endpoints)\n")
-        slow = sorted(gap_events, key=lambda e: e.get("ms", 0), reverse=True)
         print("| Endpoint | Max ms | Count |")
         print("|----------|--------|-------|")
         by_endpoint = Counter(ev.get("endpoint", "unknown") for ev in gap_events)

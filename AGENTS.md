@@ -39,6 +39,7 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 - [Maintenance](docs/agent-instructions/maintenance.md)
 - [Documented Solutions](docs/solutions/) — past bugs and learnings, organized by category with YAML frontmatter
 - [CONCEPTS.md](CONCEPTS.md) — shared domain vocabulary (entities, named processes, status concepts)
+- [MEMORY.md](MEMORY.md) — session log: ground truth for what's happened and what's next. Read first when starting a new session.
 
 ## Project Agent
 

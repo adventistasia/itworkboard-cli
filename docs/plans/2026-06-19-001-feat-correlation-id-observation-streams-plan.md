@@ -169,6 +169,7 @@ The workboard CLI captures two independent observation streams that cannot be co
 
 - `docs/roadmaps/observations-self-improvement.md` — the observation roadmap this feature directly enables
 - `docs/solutions/logic-errors/check-auth-false-negative.md` — precedent for process-boundary bugs and the "don't be shallower" principle
+- `docs/solutions/design-patterns/session-id-correlation.md` — documented design pattern for the session_id approach
 - `docs/session-digests/20260619_observations-roadmap.md` — D1: observations are in-process; D3: Phase 1 quick wins first
 - `src/workboard_cli/observations.py` — current capture module, the single funnel point for injection
 - `.opencode/agents/workboard.md` (lines 163-218) — current agent observation format and triggers

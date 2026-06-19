@@ -37,7 +37,8 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 - [Agent intents](docs/agent-instructions/agent-intents.md)
 - [Testing](docs/agent-instructions/testing.md)
 - [Maintenance](docs/agent-instructions/maintenance.md)
-- [Documented Solutions](docs/solutions/) — past bugs and learnings
+- [Documented Solutions](docs/solutions/) — past bugs and learnings, organized by category with YAML frontmatter
+- [CONCEPTS.md](CONCEPTS.md) — shared domain vocabulary (entities, named processes, status concepts)
 
 ## Project Agent
 

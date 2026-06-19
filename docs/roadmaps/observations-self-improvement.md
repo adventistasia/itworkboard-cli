@@ -8,7 +8,7 @@ Draft (2026-06-19). Start with Phase 1 before moving to Phase 2.
 
 ## Current State
 
-- **Capture layer**: Done. `observations.py` captures 4 event types (`invocation`, `error`, `crash`, `interaction_gap`) to JSONL at `~/.local/share/workboard/observations/`
+- **Capture layer**: Done. `observations.py` captures 4 event types (`invocation`, `error`, `crash`, `interaction_gap`) to JSONL at `~/.local/share/workboard/observations/`. All events carry a process-scoped `session_id` for cross-stream correlation ([design pattern](design-patterns/session-id-correlation.md)).
 - **Analysis layer**: Partial. `scripts/analyze-observations.py` reads JSONL and prints a report
 - **Improvement loop**: Manual. Human reviews report, human writes fix
 - **Agent capture**: Defined in `.opencode/agents/workboard.md` but not yet automated

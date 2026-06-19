@@ -1,3 +1,5 @@
+import re
+
 from workboard_cli.output import (
     _collect_warnings,
     build_envelope,
@@ -26,6 +28,7 @@ def test_build_envelope():
     assert envelope["source"]["listName"] == "WorkBoard"
     assert envelope["result"]["count"] == 2
     assert "retrievedAt" in envelope
+    _assert_valid_session_id(envelope)
     assert "filters" in envelope
 
 
@@ -40,6 +43,7 @@ def test_build_summary_envelope():
     assert envelope["status"] == "ok"
     assert envelope["intent"] == "manager_summary"
     assert envelope["result"]["totalItems"] == 5
+    _assert_valid_session_id(envelope)
 
 
 def test_build_error_envelope():
@@ -47,6 +51,7 @@ def test_build_error_envelope():
     envelope = build_error_envelope("bad_intent", err, SAMPLE_CONFIG)
     assert envelope["status"] == "error"
     assert envelope["errors"][0]["code"] == "unsupported_intent"
+    _assert_valid_session_id(envelope)
 
 
 def test_collect_warnings():
@@ -61,3 +66,20 @@ def test_collect_warnings_dedup():
         {"warnings": ["Same warning"]},
     ]
     assert len(_collect_warnings(items)) == 1
+
+
+def test_all_envelopes_share_session_id():
+    err = WorkboardError("test", "msg.", "hint.")
+    env1 = build_envelope([], "open_items", SAMPLE_CONFIG)
+    env2 = build_summary_envelope({}, SAMPLE_CONFIG)
+    env3 = build_error_envelope("test", err, SAMPLE_CONFIG)
+    sid = env1["sessionId"]
+    assert isinstance(sid, str) and len(sid) == 36
+    assert env2["sessionId"] == sid
+    assert env3["sessionId"] == sid
+
+
+def _assert_valid_session_id(envelope):
+    sid = envelope["sessionId"]
+    assert isinstance(sid, str) and len(sid) == 36
+    assert re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", sid)

@@ -184,6 +184,7 @@ Write to `observations/workboard-agent-observations.jsonl` in the same observati
 {
   "event": "agent_observation",
   "ts": "2026-06-18T12:00:00Z",
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
   "criterion": "intent_mismatch",
   "detail": "user asked for items_by_project which is not an approved intent",
   "context": "user_question: show me all items for the Galaxy project. agent_plan: run query open, then filter manually. cli_command: workboard query open. attempts: 1",
@@ -193,9 +194,12 @@ Write to `observations/workboard-agent-observations.jsonl` in the same observati
 ```
 
 | Field | Values |
-|---|---|
+|---|---|---|
+| `session_id` | UUID v4 string — correlates this agent entry with CLI observation events from the same session |
 | `criterion` | `intent_mismatch` / `error` / `warning` / `feature_request` / `rephrase` / `post_process` / `negative_signal` |
 | `outcome` | `resolved` / `resolved_partial` / `unresolved` / `abandoned` / `unknown` |
+
+To obtain the `session_id`, extract it from the `sessionId` field in any CLI stdout envelope after the first command invocation. Store it for the conversation duration and include it in every subsequent `agent_observation` entry. You do not need to pre-set `WORKBOARD_SESSION_ID` — reading from stdout covers the common case.
 
 ### Where to write
 

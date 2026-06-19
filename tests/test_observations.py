@@ -92,6 +92,27 @@ def test_session_id_is_valid_uuid():
         assert False, f"session_id {sid!r} is not a valid UUID"
 
 
+def test_session_id_with_invalid_env_override():
+    prev = _reload_with_env("WORKBOARD_SESSION_ID", "not-a-uuid")
+    try:
+        assert obs.get_session_id() == "not-a-uuid"
+        obs.capture("invalid_id_test")
+        event = json.loads(obs._events[0])
+        assert event["session_id"] == "not-a-uuid"
+    finally:
+        _restore_env("WORKBOARD_SESSION_ID", prev)
+
+
+def test_session_id_with_empty_env_falls_back_to_uuid():
+    prev = _reload_with_env("WORKBOARD_SESSION_ID", "")
+    try:
+        sid = obs.get_session_id()
+        parsed = uuid.UUID(sid)
+        assert parsed.version == 4
+    finally:
+        _restore_env("WORKBOARD_SESSION_ID", prev)
+
+
 def test_session_counters_include_session_id(tmp_path):
     prev_dir = _reload_with_env("WORKBOARD_OBS_DIR", str(tmp_path))
     try:

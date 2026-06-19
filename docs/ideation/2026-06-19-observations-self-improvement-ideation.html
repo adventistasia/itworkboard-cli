@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideation: Observations Self-Improvement</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;color:#1a1a1a;background:#fafafa;padding:0 1rem}
+.page{max-width:880px;margin:2rem auto}
+header{border-bottom:2px solid #e0e0e0;padding-bottom:1rem;margin-bottom:2rem}
+header h1{font-size:1.75rem;font-weight:700;margin-bottom:.25rem}
+header .meta{font-size:.85rem;color:#666;display:flex;gap:1.5rem;flex-wrap:wrap}
+header .meta span{white-space:nowrap}
+header .meta .tag{background:#e8f4fd;color:#1a6cb5;padding:.1rem .5rem;border-radius:3px;font-weight:600}
+h2{font-size:1.3rem;font-weight:700;margin:2rem 0 .75rem;padding-bottom:.3rem;border-bottom:1px solid #ddd}
+h3{font-size:1.05rem;font-weight:700;margin:1.25rem 0 .5rem}
+p,li{max-width:70ch}
+p{margin-bottom:.75rem}
+ul,ol{padding-left:1.25rem;margin-bottom:.75rem}
+li{margin-bottom:.25rem}
+code{font-family:SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;font-size:.875rem;background:#f0f0f0;padding:.1rem .35rem;border-radius:3px}
+pre{background:#f5f5f5;padding:.75rem 1rem;border-radius:6px;overflow-x:auto;font-size:.85rem;margin:.75rem 0;max-width:100%}
+table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.9rem}
+th,td{padding:.5rem .75rem;text-align:left;border-bottom:1px solid #e0e0e0}
+th{background:#f5f5f5;font-weight:600}
+.jump-list{margin:1rem 0;padding:0;list-style:none}
+.jump-list li{margin-bottom:.25rem}
+.jump-list a{color:#1a6cb5;text-decoration:none}
+.jump-list a:hover{text-decoration:underline}
+.idea-card{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:1.25rem;margin-bottom:1rem}
+.idea-card .header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.5rem}
+.idea-card .rank{background:#1a6cb5;color:#fff;font-weight:700;font-size:.8rem;padding:.15rem .55rem;border-radius:4px;white-space:nowrap;line-height:1.4}
+.idea-card .title{font-size:1.05rem;font-weight:700;line-height:1.3}
+.idea-card .meta-strip{display:flex;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:#666;margin-bottom:.75rem}
+.idea-card .meta-strip .pill{border:1px solid #ddd;border-radius:4px;padding:.1rem .5rem}
+.idea-card .meta-strip .pill.conf-high{background:#e6f7e6;border-color:#4caf50;color:#2e7d32}
+.idea-card .meta-strip .pill.conf-med{background:#fff8e1;border-color:#ffc107;color:#f57f17}
+.idea-card .meta-strip .pill.cx-low{background:#e8f4fd;border-color:#90caf9;color:#1565c0}
+.idea-card .meta-strip .pill.cx-med{background:#fff3e0;border-color:#ffb74d;color:#e65100}
+.idea-card .field{margin-bottom:.5rem}
+.idea-card .field .label{font-weight:600;font-size:.85rem;color:#555;display:block;margin-bottom:.1rem}
+.idea-card .field .value{font-size:.925rem;line-height:1.45}
+.idea-card .field .value .basis-tag{font-weight:600;color:#1a6cb5}
+.diagram{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:6px;padding:1rem;margin:.75rem 0;max-width:100%;overflow-x:auto;text-align:center}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.diagram-caption{font-size:.8rem;color:#888;text-align:center;margin-top:.35rem}
+.rejection-table{font-size:.85rem}
+.rejection-table .rej-refuted{background:#fef2f2}
+.rejection-table .rej-weak{background:#fffbeb}
+.rejection-table .rej-dup{background:#f0f0f0}
+footer{border-top:1px solid #e0e0e0;margin-top:2rem;padding-top:1rem;font-size:.8rem;color:#888;text-align:center}
+.grounding{background:#f9f9f9;border-radius:6px;padding:1rem;margin:.75rem 0;font-size:.9rem}
+.grounding h3{font-size:1rem;margin-top:1rem;margin-bottom:.35rem}
+.grounding h3:first-child{margin-top:0}
+.axes{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0}
+.axes .axis{background:#f0f0f0;border-radius:4px;padding:.25rem .6rem;font-size:.85rem}
+@media(prefers-color-scheme:dark){body{color:#e0e0e0;background:#121212}.page{background:transparent}.idea-card{background:#1e1e1e;border-color:#333}.grounding{background:#1a1a1a}th{background:#2a2a2a}code{background:#2a2a2a;color:#e0e0e0}.rejection-table .rej-refuted{background:#2d1a1a}.rejection-table .rej-weak{background:#2d2a12}.rejection-table .rej-dup{background:#222}header .meta .tag{background:#1a3a5c;color:#90caf9}.axis{background:#2a2a2a}pre{background:#1a1a1a}.diagram{background:#1a1a1a;border-color:#333}.pill{background:#2a2a2a}}</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+<h1>Ideation: Observations Self-Improvement</h1>
+<div class="meta">
+<span>2026-06-19</span>
+<span><span class="tag">repo-grounded</span></span>
+<span>Focus: observations self improvement</span>
+</div>
+</header>
+
+<section id="grounding-context">
+<h2>Grounding Context</h2>
+<div class="grounding">
+
+<h3>Codebase Context</h3>
+<p>Python (≥3.11) CLI using Typer, MSAL, Pydantic, Requests, PyYAML. Read-only SharePoint CLI wrapping Microsoft Graph API with 6 approved query intents. The observations subsystem captures 4 event types (invocation, error, crash, interaction_gap) to JSONL files at <code>~/.local/share/workboard/observations/</code>. An analysis script (<code>scripts/analyze-observations.py</code>) reads JSONL and produces a ranked markdown report. The self-improvement roadmap is drafted but mostly unimplemented.</p>
+<p>STRATEGY.md identifies "Auto-Refinement" as an active track: "the agent monitors interaction patterns and surfaced data to proactively suggest schema updates, new query intents, stale documentation refreshes, and output improvements without human triage."</p>
+
+<h3>User-Named References (constraint)</h3>
+<p><code>docs/roadmaps/observations-self-improvement.md</code> — 3-phase roadmap:</p>
+<ul>
+<li><strong>Phase 1 (Quick Wins):</strong> <code>observations stats</code> CLI command, stderr gap warnings on slow endpoints, keyword clustering for unsupported intents</li>
+<li><strong>Phase 2 (Closed Loop):</strong> Threshold-based gap promotion → auto-PR drafts → outcome trend dashboard → recent failures context injection</li>
+<li><strong>Phase 3 (Advanced):</strong> Semantic intent routing (embeddings), heuristic outcome inference, schema drift auto-detection, cross-session behavioral change</li>
+</ul>
+
+<h3>Past Learnings</h3>
+<p>Auth false-negative fix: observation fidelity matters — <code>check_auth()</code> was shallower than the real auth path. Prevention rule: observation/status paths must replicate operational paths exactly.</p>
+
+<h3>External Context</h3>
+<p>CLI telemetry prior art (Homebrew diagnostic vs request separation, gh CLI JSON output, npm audit gap→advisory→fix pipeline). SRE patterns (Four Golden Signals, USE Method, error budgets). Emerging (agent-native observability, LLM error classification, session replay). Key gap: no alerting on regression.</p>
+</div>
+</section>
+
+<section id="topic-axes">
+<h2>Topic Axes</h2>
+<div class="axes">
+<span class="axis">1. Capture depth — event types, schema, storage, fidelity</span>
+<span class="axis">2. Analysis and clustering — aggregation, keyword clustering, ranking, trends</span>
+<span class="axis">3. CLI surface and agent hooks — CLI commands, stderr warnings, agent context injection</span>
+<span class="axis">4. Automation and closed-loop — gap promotion, auto-PR, outcome inference, trend dashboard</span>
+</div>
+</section>
+
+<section id="ranked-ideas">
+<h2>Ranked Ideas</h2>
+
+<ul class="jump-list">
+<li><a href="#r1">1. Correlation ID Across Observation Streams</a></li>
+<li><a href="#r2">2. CLI Command with Structured Output</a></li>
+<li><a href="#r3">3. Session-Unique Deduplication</a></li>
+<li><a href="#r4">4. get_all() Pagination Instrumentation</a></li>
+<li><a href="#r5">5. Scheduled Observation Pulse in CI</a></li>
+<li><a href="#r6">6. Self-Correction Capture (Retry Instrumentation)</a></li>
+<li><a href="#r7">7. Iterative Error Clustering</a></li>
+</ul>
+
+<article class="idea-card" id="r1">
+<div class="header">
+<span class="rank">1</span>
+<span class="title">Correlation ID Across Observation Streams</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-high">Conf: 95%</span>
+<span class="pill cx-low">Cx: Low</span>
+<span>Axis: Capture depth</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Add a session-scoped UUID (<code>session_id</code>) generated once per CLI process and stamped on every observation event — both CLI events (invocation, error, crash, interaction_gap) and agent observations. Currently, CLI and agent observations land in separate JSONL files with no shared join key: the CLI uses <code>ts</code> + <code>ms</code> per event, the agent uses <code>ts</code> per entry. No deterministic way exists to correlate "what the CLI did" with "what happened in the conversation" for the same session. One <code>uuid4()</code> call at module init solves this permanently.</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> CLI and agent write to separate files with "no cross-file correlation key" (evidence-capture-depth.md:211). The capture module already generates <code>ts</code> and <code>ms</code> per event but no session-level identifier. The agent observation file (<code>workboard-agent-observations.jsonl</code>) and CLI file (<code>workboard-observations.jsonl</code>) are unjoinable.</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">Every downstream analysis improvement — intent-level error clustering, outcome-by-endpoint analysis, root-cause linking between "user kept rephrasing" and "endpoint consistently returned 504" — depends on joining CLI and agent views of the same session. Without a correlation key, the analysis script cannot answer "did the agent outcome match the CLI outcome for this session?" — the core metric for Phase 2.3's trend dashboard.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="value">Adds one UUID field (~36 bytes) per JSONL event. Negligible storage impact. Agent must be updated to copy the session_id from the CLI into its own observation entries.</div>
+</div>
+</article>
+
+<article class="idea-card" id="r2">
+<div class="header">
+<span class="rank">2</span>
+<span class="title">CLI Command with Structured Output</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-high">Conf: 90%</span>
+<span class="pill cx-low">Cx: Low</span>
+<span>Axis: CLI surface &amp; agent hooks</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Replace the standalone <code>scripts/analyze-observations.py</code> (markdown-only output, argparse, unregistered script path) with <code>workboard observations stats --days N --format json|markdown</code> — a first-class Typer command under a new <code>observations</code> sub-app. Structured JSON output is the primary mode for agent consumption; agent automation (Phase 2.4 context injection, Phase 2.3 trend dashboard) reads this instead of reimplementing observation directory scanning.</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> Roadmap Phase 1.1 "Add observations stats CLI command" is unimplemented. analyze-observations.py outputs markdown only — no <code>--format json</code> flag. The analysis script duplicates path resolution logic from observations.py (cli-surface.md:97-104).</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">Phase 2's gap promotion (2.1), trend dashboard (2.3), and context injection (2.4) all need programmatic access to observation summaries — a CLI command with <code>--json</code> is the stable internal API they consume. Building it first means each downstream automation step does not need to re-solve "how do I read the observations directory and parse events." Once <code>workboard observations stats --json</code> exists, a scheduled cron can pipe into trend aggregation, a CI check can diff week-over-week changes, and the agent can summon latest gaps at session start with a single CLI call.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="value">Increases CLI surface area (new subcommand group). Must handle case where no observation files exist gracefully. Analysis logic currently lives in a script — will need refactoring into a library function callable from both CLI and script contexts.</div>
+</div>
+</article>
+
+<article class="idea-card" id="r3">
+<div class="header">
+<span class="rank">3</span>
+<span class="title">Session-Unique Deduplication</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-high">Conf: 85%</span>
+<span class="pill cx-low">Cx: Low</span>
+<span>Axis: Analysis &amp; clustering</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Replace the raw <code>Counter.most_common()</code> in <code>analyze-observations.py</code> with session-unique grouping: count each distinct error code or unsupported intent at most once per session. If a single fat-finger session produces 15 "unknown field" errors, that session contributes 1 to the count, not 15. The roadmap explicitly mandates this principle (line 71: "Use session-unique counting, not raw count") but the analysis script actively violates it.</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> Roadmap observations-self-improvement.md:71 "Use session-unique counting, not raw count — filter noise." analyze-observations.py:90-95 uses <code>Counter(ev.get("code", "unknown"))</code> with no session grouping. A single noisy session dominates the report, hiding real multi-session patterns.</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">The analysis script is the gate through which all observation data flows. If it misrepresents the data by amplifying single-session noise, every downstream decision — which gap to fix, which intent to add, which endpoint to optimize — is made on misleading information. This directly contradicts the roadmap's own noise-filtering principle and must be fixed before any automated gap promotion can trust the analysis output.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="value">Requires session IDs on events (see idea #1). Without correlation IDs, session grouping must fall back to approximate heuristics (same <code>ts</code> sliding window). Temporary heuristic acceptable while #1 is implemented.</div>
+</div>
+</article>
+
+<article class="idea-card" id="r4">
+<div class="header">
+<span class="rank">4</span>
+<span class="title">get_all() Pagination Instrumentation</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-high">Conf: 95%</span>
+<span class="pill cx-low">Cx: Very Low</span>
+<span>Axis: Capture depth</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Move the <code>on_gap</code> callback invocation from <code>get()</code> into the shared HTTP execution path so <code>get_all()</code> — which paginates through multiple result pages — fires the callback on every request. Additionally, aggregate the total operation duration across all pagination rounds and emit a single aggregated gap event when total time exceeds the threshold. Currently, <code>get_all()</code> (graph_client.py:68-78) never calls <code>_on_gap</code>, making paginated fetches — the most expensive operations in the CLI — completely invisible to the observation system.</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> graph_client.py:53-61 (get() calls on_gap) vs graph_client.py:68-78 (get_all() does not). The 3000ms threshold applies per-request, not per-operation. All core SharePoint data operations (list items, columns, lists) go through get_all() (sharepoint.py:17-40).</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">The CLI's most expensive operations — paginated fetches for "all open items", "all overdue items" that typically return 500+ results — are invisible to the gap detection system. A paginated sequence of 20 × 500ms requests takes 10 seconds and registers zero gaps. This is a 2-line code change (moving the callback call) that surfaces the longest-running operations. Combined with stderr markers, users and agents would see gap events for pagination performance problems that currently go unmeasured.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="value">May produce gap events for normal pagination (every get_all will now fire per-page callbacks). Aggregated total-time gap is the right fix — per-page callbacks alone would be noisy. Implementation requires tracking cumulative duration across the pagination loop.</div>
+</div>
+
+<div class="diagram">
+<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,-apple-system,sans-serif" font-size="13">
+<rect x="10" y="10" width="140" height="36" rx="4" fill="#e3f2fd" stroke="#90caf9" stroke-width="1.5"/>
+<text x="80" y="33" text-anchor="middle" fill="#1565c0" font-weight="600">get() — single request</text>
+<path d="M150 28 L180 28" stroke="#999" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="180" y="10" width="140" height="36" rx="4" fill="#c8e6c9" stroke="#81c784" stroke-width="1.5"/>
+<text x="250" y="33" text-anchor="middle" fill="#2e7d32" font-weight="600">_on_gap fires ✓</text>
+<path d="M200 68 L200 80 L80 80" stroke="#999" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+<rect x="340" y="56" width="140" height="36" rx="4" fill="#ffebee" stroke="#ef9a9a" stroke-width="1.5"/>
+<text x="410" y="79" text-anchor="middle" fill="#c62828" font-weight="600">get_all() — paginated</text>
+<path d="M480 74 L520 74" stroke="#999" stroke-width="1.5" marker-end="url(#arrow)"/>
+<g transform="translate(520,56)">
+<rect x="0" y="0" width="140" height="36" rx="4" fill="#ffebee" stroke="#ef9a9a" stroke-width="1.5"/>
+<text x="70" y="17" text-anchor="middle" fill="#c62828" font-weight="600">_on_gap never fires ✗</text>
+<text x="70" y="32" text-anchor="middle" fill="#888" font-size="11">(20 pages × 500ms = 10s silent)</text>
+</g>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10" fill="#999"/></marker></defs>
+</svg>
+<div class="diagram-caption">The gap: every request through get() fires the gap callback, but get_all() pagination bypasses it entirely.</div>
+</div>
+</article>
+
+<article class="idea-card" id="r5">
+<div class="header">
+<span class="rank">5</span>
+<span class="title">Scheduled Observation Pulse in CI</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-med">Conf: 80%</span>
+<span class="pill cx-low">Cx: Low</span>
+<span>Axis: Automation &amp; closed-loop</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Add a weekly-scheduled GitHub Actions workflow that runs <code>workboard observations stats --days 7 --format markdown</code> and posts the output as a comment on a tracking issue (or creates a new issue if a trend crosses a threshold). One workflow file (~25 lines) guarantees a weekly analysis pulse forever. This single action directly addresses the roadmap's self-identified risk: "Cadence decay — weekly review won't sustain" (observations-self-improvement.md:74).</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> "Cadence decay — weekly review won't sustain. Phase 2 automation exists precisely because human cadence doesn't scale" (evidence-automation-loop.md:84-86). "No scheduled or CI automation exists" (evidence-automation-loop.md:68-80). Only push/PR CI workflow exists.</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">The single greatest risk to the self-improvement system is "who runs the review?" A weekly cron workflow eliminates this question entirely. Once this cadence exists, every other automation step (gap promotion, trend dashboard, context injection) adds its output to the same weekly pulse instead of requiring a separate trigger mechanism. The compound effect: the weekly issue post becomes the canonical "what changed this week" artifact, and new automation features are visible to the team the week they ship.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="true">Requires GitHub Actions runner with environment configured (token, Python setup). Output quality depends on <code>observations stats</code> command being implemented first (idea #2). Weekly cadence may be too slow for fast-moving issues; a complementary on-demand command covers that case.</div>
+</div>
+</article>
+
+<article class="idea-card" id="r6">
+<div class="header">
+<span class="rank">6</span>
+<span class="title">Self-Correction Capture (Retry Instrumentation)</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-med">Conf: 80%</span>
+<span class="pill cx-low">Cx: Low</span>
+<span>Axis: Automation &amp; closed-loop</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Add observation capture to the existing retry-on-429 logic in <code>graph_client.py</code> (lines 62-64). Log each retry attempt as a structured observation with endpoint, attempt number, delay, and success/failure. Aggregate across sessions to detect persistent hot endpoints. When an endpoint exceeds N retries across M sessions, suggest or auto-adjust the retry delay or cache TTL for that path. This is a concrete, low-risk step toward Phase 3.4 cross-session behavioral change.</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> Retry logic exists at graph_client.py:62-64 but captures nothing. "A retry is self-correction. A persistent behavioral change across sessions is self-improvement" (evidence-automation-loop.md:166). Roadmap Phase 3.4 targets cross-session behavior change.</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">This bridges the self-correction / self-improvement gap with a concrete mechanism that costs ~5 lines of code. The retry loop already exists; adding observation capture is trivial. Aggregation across sessions is a small extension to the analysis pipeline. The payoff is that throttle behavior improves without human intervention — each session's failures make the next session's behavior smarter. This is the simplest version of "the system detects, diagnoses, and fixes its own gaps" and proves the pattern in a low-risk domain before applying it to intent routing or schema drift.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="value">Increases observation volume modestly (each retry sequence adds a few events). Only meaningful if aggregated across sessions — standalone events have limited value. Requires naming convention for throttle-related observations to avoid noise in standard error analysis.</div>
+</div>
+</article>
+
+<article class="idea-card" id="r7">
+<div class="header">
+<span class="rank">7</span>
+<span class="title">Iterative Error Clustering (n-gram → tf-idf → embeddings)</span>
+</div>
+<div class="meta-strip">
+<span class="pill conf-med">Conf: 75%</span>
+<span class="pill cx-med">Cx: Medium</span>
+<span>Axis: Analysis &amp; clustering</span>
+</div>
+
+<div class="field">
+<span class="label">Description</span>
+<div class="value">Start with simple n-gram / token-overlap clustering on the <code>detail</code> and <code>code</code> fields of <code>unsupported_intent</code> errors (Roadmap Phase 1.3). Cluster output feeds back as suggested new intent entries for <code>agent-intents.md</code>. Each subsequent iteration upgrades the clusterer: bigger n-grams → tf-idf → embeddings (Phase 3.1) — while keeping the same pipeline inputs and output format. The first version (n-gram) ranks candidate intents and establishes the input/output contract; the second (tf-idf) produces cleaner clusters with centroid-term names; the third (embeddings) routes real queries automatically.</div>
+</div>
+
+<div class="field">
+<span class="label">Basis</span>
+<div class="value"><span class="basis-tag">direct:</span> Roadmap Phase 1.3 "keyword clustering to analysis script" (observations-self-improvement.md:24). Roadmap Phase 3.1 "semantic intent routing with embeddings" (observations-self-improvement.md:43). Current code: strict <code>APPROVED_INTENTS</code> set match with no fallback (evidence-analysis-clustering.md passim).</div>
+</div>
+
+<div class="field">
+<span class="label">Rationale</span>
+<div class="value">The compounding effect is in the pipeline architecture — the first version (n-gram) gives you ranked candidate intents and establishes the input/output contract. Each upgrade costs less than the one before because the data pipeline, test harness, and evaluation methodology already exist. Without this iterative approach, there is a temptation to skip straight to embeddings — which requires labeled data that does not exist yet. The n-gram output becomes that labeled training data.</div>
+</div>
+
+<div class="field">
+<span class="label">Downsides</span>
+<div class="value">n-gram clustering produces noisy clusters initially (synonyms, minor phrasing differences). Requires human review of suggested intents before promotion — cannot be fully automated at the n-gram stage. Medium complexity because it involves new Python dependencies and an output format that feeds back into the agent intents workflow.</div>
+</div>
+</section>
+
+<section id="rejection-summary">
+<h2>Rejection Summary</h2>
+<table class="rejection-table">
+<thead><tr><th>#</th><th>Idea</th><th>Axis</th><th>Reason Rejected</th></tr></thead>
+<tbody>
+<tr class="rej-refuted"><td>6</td><td>Probe Mode (Seismic Survey)</td><td>Capture depth</td><td>Violates read-only constraint + approved-intents-only policy. Probe queries generate test noise mixed with real observations.</td></tr>
+<tr class="rej-weak"><td>9</td><td>Observation Tests in CI</td><td>Capture depth</td><td>Generic hygiene — no specific demonstrated failure. Better bundled into a health gate after higher-priority items.</td></tr>
+<tr class="rej-weak"><td>12</td><td>Capture Graph Response Field Names</td><td>Capture depth</td><td>Extreme storage cost for a rare event (schema drift). More targeted schema detection is Phase 3 material.</td></tr>
+<tr class="rej-dup"><td>7,8,10</td><td>Correlation ID / Normalization / get_all() duplicates</td><td>Various</td><td>Merged into survivors #1 and #4.</td></tr>
+<tr class="rej-refuted"><td>16</td><td>Write-Time Incremental Clustering</td><td>Analysis</td><td>Wrong layer — capture path must be fast and non-blocking. Clustering belongs in the batch/on-demand analysis path.</td></tr>
+<tr class="rej-refuted"><td>17</td><td>Replace Batch with Always-Current Aggregation</td><td>Analysis</td><td>Same wrong-layer objection as #16. Capture maintains no process-global state; batch analysis is correct separation.</td></tr>
+<tr class="rej-weak"><td>15</td><td>Unify CLI and Agent Observation Streams</td><td>Analysis</td><td>Schemas differ materially (CLI: event/ts/ms vs agent: criterion/detail/context/outcome). Correlation ID (#1) is the better approach.</td></tr>
+<tr class="rej-refuted"><td>19</td><td>Pheromone-Trail Clustering</td><td>Analysis</td><td>Peak over-engineering for a CLI with ~100 events and ~5 error codes. Decaying tag vectors add no value over session-unique counting.</td></tr>
+<tr class="rej-refuted"><td>20</td><td>Epidemiology Contact Tracing</td><td>Analysis</td><td>Metaphor excess. Error lineage is trivial to trace by timestamps; "patient zero" and "blast radius" infrastructure is unnecessary.</td></tr>
+<tr class="rej-weak"><td>21</td><td>Flush-Time Baseline Comparison</td><td>Analysis</td><td>Adds I/O and logic to the hot flush path. Analysis-time comparison is strictly better — compute trend when reporting, not at every exit.</td></tr>
+<tr class="rej-weak"><td>23</td><td>Typed Error Routing by Call Site</td><td>Analysis</td><td>Designed for a 100-person team. Single-CLI with ~8 error sites and 2k lines does not need subsystem heatmaps.</td></tr>
+<tr class="rej-weak"><td>26</td><td>Invert Signal Direction (CLI→stderr)</td><td>CLI surface</td><td>No evidence of parsing failures in the current agent→CLI→parse flow. Architectural inversion without a demonstrated problem.</td></tr>
+<tr class="rej-refuted"><td>29</td><td>Chart Corrections Protocol</td><td>CLI surface</td><td>Agent writing correction docs that CLI auto-applies violates read-only constraint. Scope and mechanism are undefined.</td></tr>
+<tr class="rej-refuted"><td>30</td><td>In-Memory Ring Buffer</td><td>CLI surface</td><td>Destroys crash persistence — atexit flush survives crashes (SIGKILL edge case aside). Ring buffer loses data on hard termination.</td></tr>
+<tr class="rej-refuted"><td>31</td><td>Inline Diagnostics in Every Output Envelope</td><td>CLI surface</td><td>Couples observability metadata with domain output data. Breaks separation of concerns. Better delivered via dedicated command.</td></tr>
+<tr class="rej-weak"><td>33</td><td>Self-Promoting Gap Alerts (Sidecar Files)</td><td>Automation</td><td>No clustering exists yet — premature to build alert infrastructure. Become relevant after Phase 1.3 (keyword clustering).</td></tr>
+<tr class="rej-weak"><td>34</td><td>Template-Based Approval Hierarchy</td><td>Automation</td><td>Assumes auto-fixes and templates exist. Roadmap Phase 2.2 is aspirational with no generation mechanism yet. Premature.</td></tr>
+<tr class="rej-refuted"><td>37</td><td>Probable Cause Determination</td><td>Automation</td><td>Unnecessary ceremony for ~5 error codes where the code IS the root cause. Formal RCA adds process, not insight.</td></tr>
+<tr class="rej-weak"><td>38</td><td>Two-Tier Automatic Response</td><td>Automation</td><td>Adds velocity-weighted metrics before basic threshold promotion (Phase 2.1) works. Premature sophistication.</td></tr>
+<tr class="rej-refuted"><td>39</td><td>Pattern Memory with Half-Life Decay</td><td>Automation</td><td>6 intents + ~5 error codes = trivial pattern space. Half-life modeling is meaningless at this scale.</td></tr>
+<tr class="rej-refuted"><td>40</td><td>Aggregate-Only Push Telemetry</td><td>Automation</td><td>No server exists. Architecture is local-only JSONL for a single-org CLI. Flagrant scale mismatch.</td></tr>
+<tr class="rej-weak"><td>41</td><td>Observation Diff as CI Quality Gate</td><td>Automation</td><td>Error codes are defined in source code, not added ad-hoc. A CI gate for error codes solves a non-problem.</td></tr>
+<tr class="rej-refuted"><td>42</td><td>CLI-as-Sensor: Push-Based Anomaly Notification</td><td>Automation</td><td>"No human triage" contradicts the roadmap's phased human-in-the-loop approach. Premature autonomy.</td></tr>
+</tbody>
+</table>
+<p><em>All 4 axes have at least one survivor. No axis ended with zero coverage.</em></p>
+</section>
+
+<footer class="composition-signal">Composed 2026-06-19 by ce-ideate from <code>docs/roadmaps/observations-self-improvement.md</code></footer>
+
+</div>
+</body>
+</html>

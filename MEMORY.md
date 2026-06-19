@@ -108,3 +108,19 @@ Ground truth for what's happened and what's next. New sessions read this first, 
 **Audit verdicts:** A01 PASS, A02 PASS, A03 PASS, A04 PASS
 
 **State: DELIVERY COMPLETE**
+
+### 2026-06-19 — Session 5: session_id correlation + CE pipeline run
+
+**Done:**
+- Implemented `session_id` correlation across observation streams (U1-U4):
+  - `src/workboard_cli/observations.py` — uuid generation, `get_session_id()`, stamp on all events
+  - `src/workboard_cli/output.py` — `sessionId` in all stdout envelopes
+  - `.opencode/agents/workboard.md` — agent observation instructions updated
+  - `tests/test_observations.py` (new), `tests/test_output.py`, `tests/test_cli.py` — 83 tests passing
+- Full CE pipeline: ce-plan → ce-work → ce-simplify-code → ce-code-review → ce-commit-push-pr → CI autofix
+- Code review: P1+P3 findings applied (UUID v4 nibble, regex hardening); deferred test gaps filed as issues #1–#4
+- Created `docs/solutions/design-patterns/session-id-correlation.md` — design pattern doc
+- Created `CONCEPTS.md` — domain vocabulary (session_id, observation_stream)
+- PR [#5](https://github.com/adventistasia/itworkboard-cli/pull/5) open, CI passing
+
+**Next:** Close PR #5, then **session-unique counting** in `scripts/analyze-observations.py` (Phase 1.1 of observations roadmap). Resolve agent-obs path-resolution caveat in `.opencode/agents/workboard.md` first — it's a prerequisite for Phase 2 auto-improvement.

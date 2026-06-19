@@ -12,6 +12,7 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 | **CLI** | `workboard --help` |
 | **Target site** | `https://southernasiapacific.sharepoint.com/sites/ITWorkboard` |
 | **Primary list** | `WorkBoard` at `/Lists/WorkBoard` |
+| **Temp files** | `tmp/` — use for scratch work, agent intermediates, etc. |
 | **Onboarding** | [docs/onboarding_agent.md](docs/onboarding_agent.md) |
 | **Graph docs** | [docs/graph-api-references.md](docs/graph-api-references.md) |
 
@@ -23,6 +24,12 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 - **Approved agent intents only** (see [agent-intents](docs/agent-instructions/agent-intents.md)).
 - **Unknown schema fields** must be discovered and documented.
 
+## Temp Directory (`tmp/`)
+
+- Use `tmp/` for all scratch work — agent intermediates, downloaded references, draft output, etc.
+- Contents are git-ignored; only `.gitignore` and `.gitkeep` are tracked.
+- Use `C:\Users\rmicua\AppData\Local\Temp\opencode` instead only when working outside the project directory.
+
 ## Detailed Instructions
 
 - [Architecture & CLI commands](docs/agent-instructions/architecture.md)
@@ -30,7 +37,9 @@ Read-only CLI for querying the Adventist Asia IT WorkBoard in SharePoint.
 - [Agent intents](docs/agent-instructions/agent-intents.md)
 - [Testing](docs/agent-instructions/testing.md)
 - [Maintenance](docs/agent-instructions/maintenance.md)
-- [Documented Solutions](docs/solutions/) — past bugs and learnings
+- [Documented Solutions](docs/solutions/) — past bugs and learnings, organized by category with YAML frontmatter
+- [CONCEPTS.md](CONCEPTS.md) — shared domain vocabulary (entities, named processes, status concepts)
+- [MEMORY.md](MEMORY.md) — session log: ground truth for what's happened and what's next. Read first when starting a new session.
 
 ## Project Agent
 

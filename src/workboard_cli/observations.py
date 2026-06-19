@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -14,11 +15,16 @@ _events: list[str] = []
 _counters: dict[str, int] = {}
 _start = time.monotonic()
 _disabled = os.environ.get("WORKBOARD_OBS_DISABLE") == "1"
+_session_id: str = os.environ.get("WORKBOARD_SESSION_ID") or str(uuid.uuid4())
 _OBS_DIR: Path | None = None
 
 
 def _iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def get_session_id() -> str:
+    return _session_id
 
 
 def _get_dir() -> Path | None:
@@ -48,6 +54,7 @@ def capture(event: str, **data: Any) -> None:
     if _disabled:
         return
     _counters[event] = _counters.get(event, 0) + 1
+    data["session_id"] = _session_id
     data["event"] = event
     data["ts"] = _iso()
     data["ms"] = int((time.monotonic() - _start) * 1000)
@@ -78,6 +85,7 @@ def _flush() -> None:
             json.dump({
                 "event": "session",
                 "ts": _iso(),
+                "session_id": _session_id,
                 "duration_ms": int((time.monotonic() - _start) * 1000),
                 "counts": dict(_counters),
                 "version": __version__,

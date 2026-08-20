@@ -5,9 +5,10 @@ import sys
 import tempfile
 import time
 import uuid
-from datetime import datetime, timezone
+from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from workboard_cli import __version__
 
@@ -20,7 +21,7 @@ _OBS_DIR: Path | None = None
 
 
 def _iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def get_session_id() -> str:
@@ -79,8 +80,7 @@ def _flush() -> None:
         return
     try:
         with open(d / "workboard-observations.jsonl", "a", encoding="utf-8") as f:
-            for line in _events:
-                f.write(line + "\n")
+            f.writelines(line + "\n" for line in _events)
         with open(d / "workboard-counters.json", "w", encoding="utf-8") as f:
             json.dump({
                 "event": "session",

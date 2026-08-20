@@ -12,7 +12,7 @@ import argparse
 import json
 import sys
 from collections import Counter
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 
@@ -39,7 +39,7 @@ def load_events(dirs: list[Path], since: datetime | None = None) -> list[dict]:
                 try:
                     ev = json.loads(line)
                     if since:
-                        ev_ts = datetime.fromisoformat(ev.get("ts", "")).replace(tzinfo=timezone.utc)
+                        ev_ts = datetime.fromisoformat(ev.get("ts", "")).replace(tzinfo=UTC)
                         if ev_ts < since:
                             continue
                     events.append(ev)
@@ -108,7 +108,7 @@ def main():
     parser.add_argument("--days", type=int, default=7, help="Look back N days (default: 7)")
     args = parser.parse_args()
 
-    since = datetime.now(timezone.utc) - timedelta(days=args.days)
+    since = datetime.now(UTC) - timedelta(days=args.days)
     dirs = find_log_dirs()
     events = load_events(dirs, since=since)
     report(events)

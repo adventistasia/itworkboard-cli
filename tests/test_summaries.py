@@ -1,8 +1,8 @@
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 
 from workboard_cli.summaries import build_summary, render_markdown_summary
 
-NOW = datetime.now(timezone.utc)
+NOW = datetime.now(UTC)
 
 SAMPLE_ITEMS = [
     {

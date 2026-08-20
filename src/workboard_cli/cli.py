@@ -2,9 +2,8 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 
 import typer
 import yaml
@@ -111,7 +110,7 @@ def _build_source(site_url, list_name=None, list_id=None):
 
 
 def _now_iso():
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _version_callback(value: bool):
@@ -530,12 +529,12 @@ def self_install():
 @agent_app.command("query")
 def agent_query(
     intent: str = typer.Option(..., "--intent", help="Agent intent to execute"),
-    owner: Optional[str] = typer.Option(None, "--owner", help="Owner filter (for items_by_owner)"),
-    days: Optional[int] = typer.Option(None, "--days", help="Days filter (for recently_updated_items, new_items, recently_completed_items)"),
-    group_by: Optional[str] = typer.Option(None, "--group-by", help="Group-by filter (for cycle_time_stats: owner|stage)"),
-    project: Optional[str] = typer.Option(None, "--project", help="Project filter (for items_by_project)"),
-    stage: Optional[str] = typer.Option(None, "--stage", help="Stage filter (for items_by_stage)"),
-    person: Optional[str] = typer.Option(None, "--person", help="Person filter (for items_by_decision_authority)"),
+    owner: str | None = typer.Option(None, "--owner", help="Owner filter (for items_by_owner)"),
+    days: int | None = typer.Option(None, "--days", help="Days filter (for recently_updated_items, new_items, recently_completed_items)"),
+    group_by: str | None = typer.Option(None, "--group-by", help="Group-by filter (for cycle_time_stats: owner|stage)"),
+    project: str | None = typer.Option(None, "--project", help="Project filter (for items_by_project)"),
+    stage: str | None = typer.Option(None, "--stage", help="Stage filter (for items_by_stage)"),
+    person: str | None = typer.Option(None, "--person", help="Person filter (for items_by_decision_authority)"),
     format: str = typer.Option("json", "--format", help="Output format"),
 ):
     """Execute an approved agent intent."""

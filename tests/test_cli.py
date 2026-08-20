@@ -5,8 +5,8 @@ from unittest.mock import patch
 
 from typer.testing import CliRunner
 
-from workboard_cli.cli import app
 from workboard_cli import observations as obs
+from workboard_cli.cli import app
 
 runner = CliRunner()
 

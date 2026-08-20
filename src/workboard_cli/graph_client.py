@@ -1,5 +1,5 @@
 import time
-from typing import Callable, Optional
+from collections.abc import Callable
 
 import requests
 
@@ -11,7 +11,7 @@ class GraphClient:
     MAX_RETRIES = 3
     RETRY_DELAY = 1
 
-    def __init__(self, token, on_gap: Optional[Callable] = None):
+    def __init__(self, token, on_gap: Callable | None = None):
         self.session = requests.Session()
         self._on_gap = on_gap
         self.session.headers.update({

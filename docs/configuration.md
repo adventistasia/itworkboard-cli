@@ -4,8 +4,8 @@
 
 ```
 config/
-  workboard.defaults.yaml    # Defaults — committed, shared
-  workboard.example.yaml     # User-facing example
+  workboard.defaults.yaml    # Defaults — committed, shared (includes team credentials)
+  workboard.example.yaml     # Optional — for overriding defaults only
   local.yaml                 # Local overrides — gitignored
 ```
 

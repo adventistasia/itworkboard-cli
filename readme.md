@@ -32,11 +32,13 @@ pip uninstall workboard-cli
 
 ## Setup
 
-The CLI ships with default credentials for our team — no config setup needed for basic use:
+The CLI ships with default credentials for our team — run from the repo root with no config setup needed:
 
 ```bash
 workboard auth login
 ```
+
+> **Note:** Defaults are resolved relative to the working directory. Run `workboard` commands from the repo root, or set `WORKBOARD_TENANT_ID`/`WORKBOARD_CLIENT_ID` env vars for use outside the repo.
 
 To override defaults (e.g. for a different tenant), create `config/local.yaml` or set environment variables:
 

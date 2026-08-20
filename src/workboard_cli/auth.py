@@ -28,7 +28,7 @@ def _load_msal_cache():
         try:
             with open(CACHE_FILE, encoding="utf-8") as f:
                 return json.load(f)
-        except Exception:
+        except (OSError, ValueError):
             return {}
     return {}
 

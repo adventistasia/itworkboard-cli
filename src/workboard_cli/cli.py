@@ -2,9 +2,8 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 
 import typer
 import yaml
@@ -111,7 +110,7 @@ def _build_source(site_url, list_name=None, list_id=None):
 
 
 def _now_iso():
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _version_callback(value: bool):
@@ -228,6 +227,61 @@ def schema_export(
             )
         out_path = _export_schema(client, site_id, target["id"], output)
         print(f"Schema written to {out_path}")
+    except WorkboardError as e:
+        _error_exit(e)
+
+
+@schema_app.command("drift")
+def schema_drift(
+    baseline: str = typer.Option("discovery/workboard_schema.baseline.json", "--baseline", help="Baseline file path"),
+    output: str | None = typer.Option(None, "--output", help="Output file path (default: stdout)"),
+):
+    """Detect schema drift against a baseline for work-related lists."""
+    try:
+        from workboard_cli.schema_drift import (
+            diff_schemas,
+            establish_baseline,
+            export_all_schemas,
+            load_baseline,
+        )
+
+        cfg, client = _get_client()
+        site = get_site(client, cfg["site_url"])
+        site_id = site.get("id")
+        current_schemas = export_all_schemas(client, site_id)
+        existing = load_baseline(baseline)
+
+        source = {"system": "workboard-cli", "siteUrl": cfg["site_url"]}
+        meta = {
+            "source": source,
+            "retrievedAt": _now_iso(),
+            "sessionId": get_session_id(),
+        }
+
+        if existing is None:
+            result = establish_baseline(baseline, current_schemas)
+            envelope = {**result, **meta}
+        else:
+            drift = diff_schemas(existing, current_schemas)
+            summary = {"high": 0, "medium": 0, "low": 0}
+            for entry in drift:
+                sev = entry.get("severity", "low")
+                summary[sev] = summary.get(sev, 0) + 1
+            envelope = {
+                "status": "ok",
+                "drift": drift,
+                "summary": summary,
+                **meta,
+            }
+
+        if output:
+            Path(output).parent.mkdir(parents=True, exist_ok=True)
+            Path(output).write_text(json.dumps(envelope, indent=2), encoding="utf-8")
+        else:
+            print(json.dumps(envelope, indent=2))
+
+        if existing is not None and any(e.get("severity") == "high" for e in drift):
+            raise typer.Exit(6)
     except WorkboardError as e:
         _error_exit(e)
 
@@ -475,8 +529,12 @@ def self_install():
 @agent_app.command("query")
 def agent_query(
     intent: str = typer.Option(..., "--intent", help="Agent intent to execute"),
-    owner: Optional[str] = typer.Option(None, "--owner", help="Owner filter (for items_by_owner)"),
-    days: Optional[int] = typer.Option(None, "--days", help="Days filter (for recently_updated_items)"),
+    owner: str | None = typer.Option(None, "--owner", help="Owner filter (for items_by_owner)"),
+    days: int | None = typer.Option(None, "--days", help="Days filter (for recently_updated_items, new_items, recently_completed_items)"),
+    group_by: str | None = typer.Option(None, "--group-by", help="Group-by filter (for cycle_time_stats: owner|stage)"),
+    project: str | None = typer.Option(None, "--project", help="Project filter (for items_by_project)"),
+    stage: str | None = typer.Option(None, "--stage", help="Stage filter (for items_by_stage)"),
+    person: str | None = typer.Option(None, "--person", help="Person filter (for items_by_decision_authority)"),
     format: str = typer.Option("json", "--format", help="Output format"),
 ):
     """Execute an approved agent intent."""
@@ -487,8 +545,16 @@ def agent_query(
         params = {}
         if owner:
             params["owner"] = owner
-        if days:
+        if days is not None:
             params["days"] = days
+        if group_by:
+            params["group_by"] = group_by
+        if project:
+            params["project"] = project
+        if stage:
+            params["stage"] = stage
+        if person:
+            params["person"] = person
         envelope = execute_intent(intent, raw_items, cfg, params)
         print(json.dumps(envelope, indent=2))
     except WorkboardError as e:

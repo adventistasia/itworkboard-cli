@@ -1,10 +1,10 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from workboard_cli.observations import get_session_id
 
 
 def _now_iso():
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _build_source(site_url, list_name=None, list_id=None):
@@ -32,16 +32,16 @@ def build_envelope(items, intent, config, list_id=None, filters=None):
     }
 
 
-def build_summary_envelope(summary, config, list_id=None):
+def build_summary_envelope(summary, config, list_id=None, intent_name="manager_summary", filters=None):
     site_url = config.get("site_url", "")
     list_name = config.get("primary_list_name", "WorkBoard")
     return {
         "status": "ok",
-        "intent": "manager_summary",
+        "intent": intent_name,
         "source": _build_source(site_url, list_name, list_id),
         "retrievedAt": _now_iso(),
         "sessionId": get_session_id(),
-        "filters": {},
+        "filters": filters or {},
         "result": summary,
         "warnings": [],
         "errors": [],

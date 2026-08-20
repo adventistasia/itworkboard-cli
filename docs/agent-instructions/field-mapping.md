@@ -61,5 +61,10 @@ The `discovery_spike.py` module was used during initial development to enumerate
 | `date_due` | `DateDue` | DateTime |
 | `title` | `Title` | Standard SharePoint title |
 | `_ColorTag` | (discovery only) | Present in raw data but not mapped |
+| `rel_project` | `RelProject` | JSON lookup — parsed to `{id, text}` |
+| `rel_work_brief` | `RelWorkBrief` | HTML field — parsed to link list |
+| `work_intake` | `WorkIntake` | Multi-lookup — expanded to `[{lookupId, lookupValue}]` |
+| `description` | `Description` | Plain text |
+| `priority_status` | `PriorityStatus` | Choice or text |
 
 Unknown fields encountered in live data should be added here after discovery, never silently dropped.

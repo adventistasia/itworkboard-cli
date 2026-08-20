@@ -5,8 +5,8 @@ from unittest.mock import patch
 
 from typer.testing import CliRunner
 
-from workboard_cli.cli import app
 from workboard_cli import observations as obs
+from workboard_cli.cli import app
 
 runner = CliRunner()
 
@@ -139,6 +139,51 @@ def test_agent_query_unsupported_intent_includes_session_id():
     assert "sessionId" in data
     assert isinstance(data["sessionId"], str)
     assert len(data["sessionId"]) == 36
+
+
+def test_agent_query_new_items():
+    with _mock_query_patches():
+        result = runner.invoke(app, ["agent", "query", "--intent", "new_items", "--days", "7"])
+    assert result.exit_code == 0
+    envelope = json.loads(result.stdout)
+    assert envelope["intent"] == "new_items"
+
+
+def test_agent_query_new_items_missing_days():
+    result = runner.invoke(app, ["agent", "query", "--intent", "new_items"])
+    assert result.exit_code == 1
+
+
+def test_agent_query_recently_completed_items():
+    with _mock_query_patches():
+        result = runner.invoke(app, ["agent", "query", "--intent", "recently_completed_items", "--days", "30"])
+    assert result.exit_code == 0
+
+
+def test_agent_query_cycle_time_stats():
+    with _mock_query_patches():
+        result = runner.invoke(app, ["agent", "query", "--intent", "cycle_time_stats"])
+    assert result.exit_code == 0
+    envelope = json.loads(result.stdout)
+    assert envelope["intent"] == "cycle_time_stats"
+
+
+def test_agent_query_items_by_project():
+    with _mock_query_patches():
+        result = runner.invoke(app, ["agent", "query", "--intent", "items_by_project", "--project", "Test"])
+    assert result.exit_code == 0
+
+
+def test_agent_query_items_by_stage():
+    with _mock_query_patches():
+        result = runner.invoke(app, ["agent", "query", "--intent", "items_by_stage", "--stage", "Open"])
+    assert result.exit_code == 0
+
+
+def test_agent_query_items_by_decision_authority():
+    with _mock_query_patches():
+        result = runner.invoke(app, ["agent", "query", "--intent", "items_by_decision_authority", "--person", "Alice"])
+    assert result.exit_code == 0
 
 
 def test_query_open_includes_session_id_when_obs_disabled():

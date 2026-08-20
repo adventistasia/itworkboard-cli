@@ -3,7 +3,7 @@ import json
 from workboard_cli.sharepoint import get_list_columns
 
 
-def export_schema(client, site_id, list_id, output_path):
+def build_schema_columns(client, site_id, list_id):
     columns = get_list_columns(client, site_id, list_id)
     structured = []
     for col in columns:
@@ -14,7 +14,12 @@ def export_schema(client, site_id, list_id, output_path):
             "required": col.get("required", False),
             "lookup": _get_lookup_hint(col),
         })
-    output = {"columns": structured, "count": len(structured)}
+    return {"columns": structured, "column_count": len(structured), "list_id": list_id}
+
+
+def export_schema(client, site_id, list_id, output_path):
+    schema = build_schema_columns(client, site_id, list_id)
+    output = {"columns": schema["columns"], "count": schema["column_count"]}
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, default=str)
     return output_path

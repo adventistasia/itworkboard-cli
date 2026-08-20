@@ -65,6 +65,12 @@ Output format (JSON):
 
 Export column schema for a SharePoint list to a JSON file. Prints the path on success.
 
+### `workboard schema drift --baseline <path>`
+
+Detect schema drift against a baseline for work-related lists (WorkBoard, Deliverables, Tasks, WorkIntake, WorkReview, Users). On first run (no baseline), writes the baseline and exits 0. On subsequent runs, prints a drift report and exits 6 if any entry has high severity. Options:
+- `--baseline PATH` (default: `discovery/workboard_schema.baseline.json`)
+- `--output PATH` (optional, default: stdout)
+
 ### `workboard config validate --config <path> --schema <path>`
 
 Validate that the normalization config field names exist in the exported schema. Reports mismatches with field-level detail.
@@ -110,6 +116,12 @@ The only agent-facing entry point. Validates intent against the approved list:
 - `items_by_owner` (requires `--owner`)
 - `recently_updated_items` (requires `--days`)
 - `manager_summary`
+- `new_items` (requires `--days`)
+- `recently_completed_items` (requires `--days`)
+- `cycle_time_stats` (optional `--group-by owner|stage`, default `owner`)
+- `items_by_project` (requires `--project`)
+- `items_by_stage` (requires `--stage`)
+- `items_by_decision_authority` (requires `--person`)
 
 Returns the standard JSON agent envelope. See `docs/agent_json_contract.md`.
 
@@ -143,3 +155,4 @@ Returns the standard JSON agent envelope. See `docs/agent_json_contract.md`.
 | 3 | API / Graph error |
 | 4 | Config error |
 | 5 | Network error |
+| 6 | Schema drift detected (high severity) |

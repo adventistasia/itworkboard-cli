@@ -24,6 +24,8 @@ fields:
   work_intake: "WorkIntake"
   rel_project: "RelProject"
   rel_work_brief: "RelWorkBrief"
+  description: "Description"
+  priority_status: "PriorityStatus"
   date_due: "DateDue"
   date_committed: "DateCommitted"
   date_start: "DateStart"

@@ -2,7 +2,7 @@
 
 ## For AI agent orchestrators
 
-The `agent query` command exposes 6 approved intents. This is the **only** agent-facing interface.
+The `agent query` command exposes 12 approved intents. This is the **only** agent-facing interface.
 
 ## Approved intents
 
@@ -12,6 +12,12 @@ workboard agent query --intent overdue_items
 workboard agent query --intent blocked_items
 workboard agent query --intent items_by_owner --owner "Name"
 workboard agent query --intent recently_updated_items --days 7
+workboard agent query --intent new_items --days 7
+workboard agent query --intent recently_completed_items --days 7
+workboard agent query --intent cycle_time_stats [--group-by owner|stage]
+workboard agent query --intent items_by_project --project "Name"
+workboard agent query --intent items_by_stage --stage "Name"
+workboard agent query --intent items_by_decision_authority --person "Name"
 workboard agent query --intent manager_summary
 ```
 

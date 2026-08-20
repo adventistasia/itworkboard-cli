@@ -4,6 +4,8 @@
 
 ```
 workboard agent query --intent <name> [--owner "Name"] [--days N]
+    [--group-by owner|stage] [--project "Name"] [--stage "Name"]
+    [--person "Name"]
   → agent.py: validate_intent(intent)
   → agent.py: execute_intent(name, params)
     → sharepoint.get_list_items() or queries module

@@ -22,7 +22,7 @@ def _parse_date(value):
         if "T" not in value and " " not in value:
             return value
         try:
-            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))  # noqa: FURB162
             return dt.isoformat()
         except (ValueError, TypeError):
             return value

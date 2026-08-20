@@ -41,11 +41,11 @@ def _get_dir() -> Path | None:
             Path.home() / ".local" / "share" / "workboard" / "observations"
     try:
         d.mkdir(parents=True, exist_ok=True)
-    except Exception:
+    except (OSError, PermissionError):
         d = Path(tempfile.gettempdir()) / "workboard-observations"
         try:
             d.mkdir(parents=True, exist_ok=True)
-        except Exception:
+        except (OSError, PermissionError):
             return None
     _OBS_DIR = d
     return d
@@ -92,7 +92,7 @@ def _flush() -> None:
                 "command": " ".join(sys.argv[1:]),
                 "exit_code": 0,
             }, f, indent=2)
-    except Exception:
+    except (OSError, PermissionError, ValueError):
         pass
 
 

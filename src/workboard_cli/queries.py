@@ -2,6 +2,13 @@ import statistics
 from datetime import UTC, datetime, timedelta
 
 
+def _to_utc(dt: datetime) -> datetime:
+    """Convert a datetime to UTC, handling both naive and aware inputs."""
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=UTC)
+    return dt.astimezone(UTC)
+
+
 def _is_overdue(item):
     if item["stageCategory"] == "closed":
         return False
@@ -10,7 +17,7 @@ def _is_overdue(item):
         return False
     try:
         due_dt = datetime.fromisoformat(due)
-        return due_dt.replace(tzinfo=UTC) < datetime.now(UTC)
+        return _to_utc(due_dt) < datetime.now(UTC)
     except (ValueError, TypeError):
         return False
 
@@ -22,7 +29,7 @@ def _is_recently_updated(item, days):
     try:
         modified_dt = datetime.fromisoformat(modified)
         cutoff = datetime.now(UTC) - timedelta(days=days)
-        return modified_dt.replace(tzinfo=UTC) >= cutoff
+        return _to_utc(modified_dt) >= cutoff
     except (ValueError, TypeError):
         return False
 
@@ -33,7 +40,7 @@ def _is_within_days(date_str, days):
     try:
         dt = datetime.fromisoformat(date_str)
         cutoff = datetime.now(UTC) - timedelta(days=days)
-        return dt.replace(tzinfo=UTC) >= cutoff
+        return _to_utc(dt) >= cutoff
     except (ValueError, TypeError):
         return False
 

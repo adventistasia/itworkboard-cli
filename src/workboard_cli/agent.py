@@ -55,21 +55,21 @@ def execute_intent(intent, raw_items, config, params=None):
             "Provide --owner <name> with the owner's display name or email.",
         )
 
-    if intent == "recently_updated_items" and not params.get("days"):
+    if intent == "recently_updated_items" and params.get("days") is None:
         raise WorkboardError(
             "validation_error",
             "The 'recently_updated_items' intent requires a --days parameter.",
             "Provide --days <number> with the number of days to look back.",
         )
 
-    if intent == "new_items" and not params.get("days"):
+    if intent == "new_items" and params.get("days") is None:
         raise WorkboardError(
             "validation_error",
             "The 'new_items' intent requires a --days parameter.",
             "Provide --days <number> with the number of days to look back.",
         )
 
-    if intent == "recently_completed_items" and not params.get("days"):
+    if intent == "recently_completed_items" and params.get("days") is None:
         raise WorkboardError(
             "validation_error",
             "The 'recently_completed_items' intent requires a --days parameter.",

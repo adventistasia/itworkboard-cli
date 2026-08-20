@@ -234,7 +234,7 @@ def schema_export(
 @schema_app.command("drift")
 def schema_drift(
     baseline: str = typer.Option("discovery/workboard_schema.baseline.json", "--baseline", help="Baseline file path"),
-    output: str = typer.Option(None, "--output", help="Output file path (default: stdout)"),
+    output: str | None = typer.Option(None, "--output", help="Output file path (default: stdout)"),
 ):
     """Detect schema drift against a baseline for work-related lists."""
     try:
@@ -545,7 +545,7 @@ def agent_query(
         params = {}
         if owner:
             params["owner"] = owner
-        if days:
+        if days is not None:
             params["days"] = days
         if group_by:
             params["group_by"] = group_by

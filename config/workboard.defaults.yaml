@@ -7,6 +7,11 @@
 #   WORKBOARD_SITE_URL      — SharePoint site URL
 #   WORKBOARD_LIST_NAME     — Primary list name
 
+# Team Azure AD credentials — these are identifiers (not secrets) and are
+# shared across the team. Override via config/local.yaml or env vars if needed.
+tenant_id: "918af52d-8dec-44c4-818a-cebf3c9b7767"
+client_id: "c626c5b9-2fbb-4004-89a2-7660ea1906c0"
+
 site_url: "https://southernasiapacific.sharepoint.com/sites/ITWorkboard"
 primary_list_name: "WorkBoard"
 

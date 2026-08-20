@@ -18,13 +18,10 @@ Install workboard-cli from this repo, then onboard me.
 
 1. Run `pip install -e .` from the repo root to install the package.
 2. Verify the CLI works: run `workboard --help`.
-3. Walk me through setup:
-   - Check if `config/local.yaml` exists. If not, copy `config/workboard.example.yaml` to `config/local.yaml`.
-   - Ask me for my Azure AD `tenant_id` and `client_id`, then write them into `config/local.yaml`.
-4. Run `workboard auth login` and guide me through the device code authentication flow.
-5. Once authenticated, run `workboard site info` to confirm connectivity.
-6. Run a quick query to show me it works: `workboard items list --limit 5`.
-7. Summarise what was installed and suggest next steps (try a query, view manager summary, or read docs/agent_usage.md).
+3. Run `workboard auth login` and guide me through the device code authentication flow.
+4. Once authenticated, run `workboard site info` to confirm connectivity.
+5. Run a quick query to show me it works: `workboard items list --limit 5`.
+6. Summarise what was installed and suggest next steps (try a query, view manager summary, or read docs/agent_usage.md).
 ```
 
 ## Uninstall
@@ -35,9 +32,18 @@ pip uninstall workboard-cli
 
 ## Setup
 
-1. Copy `config/workboard.example.yaml` to `config/local.yaml`
-2. Fill in your Azure AD `tenant_id` and `client_id`
-3. Authenticate: `workboard auth login`
+The CLI ships with default credentials for our team — no config setup needed for basic use:
+
+```bash
+workboard auth login
+```
+
+To override defaults (e.g. for a different tenant), create `config/local.yaml` or set environment variables:
+
+- `WORKBOARD_TENANT_ID`
+- `WORKBOARD_CLIENT_ID`
+- `WORKBOARD_SITE_URL`
+- `WORKBOARD_LIST_NAME`
 
 ## Commands
 
@@ -61,7 +67,7 @@ workboard config validate                     # Validate config mapping
 
 ## Configuration
 
-Default config: `config/workboard.defaults.yaml` (committed). Override via `config/local.yaml` (gitignored) or environment variables:
+Default config: `config/workboard.defaults.yaml` (committed) — includes team Azure AD credentials, site URL, and field mappings. Override any value via `config/local.yaml` (gitignored) or environment variables:
 
 - `WORKBOARD_TENANT_ID`
 - `WORKBOARD_CLIENT_ID`

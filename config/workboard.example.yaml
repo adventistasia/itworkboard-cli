@@ -1,6 +1,6 @@
-# WorkBoard CLI example config
-# Copy to config/local.yaml and fill in your tenant/client IDs.
-# All values can be overridden by environment variables.
+# WorkBoard CLI example config — for overriding defaults only.
+# The CLI ships with default credentials in workboard.defaults.yaml.
+# Copy to config/local.yaml and adjust values only if you need overrides.
 
 tenant_id: "your-tenant-id"
 client_id: "your-client-id"

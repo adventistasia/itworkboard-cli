@@ -2,7 +2,10 @@
 
 ## "Missing credentials"
 
-Set `WORKBOARD_TENANT_ID` and `WORKBOARD_CLIENT_ID` environment variables, or create `config/local.yaml`.
+The CLI ships with default credentials in `config/workboard.defaults.yaml`. If you see this error, the defaults file may be missing or corrupted.
+
+1. Verify `config/workboard.defaults.yaml` exists in the project root
+2. If overriding: set `WORKBOARD_TENANT_ID` and `WORKBOARD_CLIENT_ID` environment variables, or create `config/local.yaml`
 
 ```bash
 export WORKBOARD_TENANT_ID="your-tenant-id"

@@ -53,8 +53,9 @@ def load_config(path=None):
     if not tenant_id or not client_id:
         raise WorkboardError(
             "config_error",
-            "Missing credentials: set WORKBOARD_TENANT_ID and WORKBOARD_CLIENT_ID "
-            "env vars, or create config/local.yaml",
+            "Missing credentials: ensure config/workboard.defaults.yaml exists, "
+            "or set WORKBOARD_TENANT_ID and WORKBOARD_CLIENT_ID env vars, "
+            "or create config/local.yaml",
         )
 
     return {

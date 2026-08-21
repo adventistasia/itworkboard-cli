@@ -421,9 +421,14 @@ def config_set(
 
         path = update_local_config(overrides)
         keys = ", ".join(overrides.keys())
-        print(f"Updated {path}")
-        print(f"Set: {keys}")
-        print("Note: WORKBOARD_TENANT_ID/WORKBOARD_CLIENT_ID env vars take precedence over this file.")
+        result = {
+            "status": "ok",
+            "sessionId": get_session_id(),
+            "message": f"Updated {path}",
+            "set": keys,
+            "note": "WORKBOARD_TENANT_ID/WORKBOARD_CLIENT_ID env vars take precedence over this file.",
+        }
+        print(json.dumps(result, indent=2))
     except WorkboardError as e:
         _error_exit(e)
 

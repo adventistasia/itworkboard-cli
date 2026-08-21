@@ -46,8 +46,23 @@ def update_local_config(overrides: dict, path: Path | None = None) -> Path:
             )
 
     if target.exists():
-        with open(target, encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
+        try:
+            with open(target, encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        except yaml.YAMLError as exc:
+            raise WorkboardError(
+                "config_error",
+                f"Malformed YAML in {target}: {exc}",
+                "Fix the YAML syntax or delete the file to start fresh.",
+            )
+        if data is None:
+            data = {}
+        elif not isinstance(data, dict):
+            raise WorkboardError(
+                "config_error",
+                f"Config file {target} must contain a mapping, got {type(data).__name__}.",
+                "Fix the file to be a YAML mapping or delete it to start fresh.",
+            )
     else:
         data = {}
 

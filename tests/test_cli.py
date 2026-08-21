@@ -239,3 +239,77 @@ def test_cross_stream_session_id_consistency(tmp_path):
         else:
             os.environ.pop("WORKBOARD_OBS_DIR", None)
         importlib.reload(obs)
+
+
+_VALID_GUID = "918af52d-8dec-44c4-818a-cebf3c9b7767"
+_VALID_GUID2 = "c626c5b9-2fbb-4004-89a2-7660ea1906c0"
+
+
+def test_config_set_tenant_id(tmp_path):
+    target = tmp_path / "local.yaml"
+    with patch("workboard_cli.config.LOCAL_PATHS", [target]):
+        result = runner.invoke(app, ["config", "set", "--tenant-id", _VALID_GUID])
+    assert result.exit_code == 0
+    assert "tenant_id" in result.stdout
+    assert target.exists()
+
+
+def test_config_set_client_id(tmp_path):
+    target = tmp_path / "local.yaml"
+    with patch("workboard_cli.config.LOCAL_PATHS", [target]):
+        result = runner.invoke(app, ["config", "set", "--client-id", _VALID_GUID2])
+    assert result.exit_code == 0
+    assert "client_id" in result.stdout
+    assert target.exists()
+
+
+def test_config_set_both_keys(tmp_path):
+    target = tmp_path / "local.yaml"
+    with patch("workboard_cli.config.LOCAL_PATHS", [target]):
+        result = runner.invoke(
+            app, ["config", "set", "--tenant-id", _VALID_GUID, "--client-id", _VALID_GUID2]
+        )
+    assert result.exit_code == 0
+    import yaml
+
+    data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert data["tenant_id"] == _VALID_GUID
+    assert data["client_id"] == _VALID_GUID2
+
+
+def test_config_set_no_flags():
+    result = runner.invoke(app, ["config", "set"])
+    assert result.exit_code == 1
+    assert "config_error" in result.stdout
+
+
+def test_config_set_invalid_guid(tmp_path):
+    target = tmp_path / "local.yaml"
+    with patch("workboard_cli.config.LOCAL_PATHS", [target]):
+        result = runner.invoke(app, ["config", "set", "--tenant-id", "not-a-guid"])
+    assert result.exit_code == 1
+    assert "config_error" in result.stdout
+    assert not target.exists()
+
+
+def test_config_set_preserves_existing_keys(tmp_path):
+    import yaml
+
+    target = tmp_path / "local.yaml"
+    target.write_text(
+        yaml.dump({"tenant_id": "old-tenant", "site_url": "https://example.com"}),
+        encoding="utf-8",
+    )
+    with patch("workboard_cli.config.LOCAL_PATHS", [target]):
+        result = runner.invoke(app, ["config", "set", "--client-id", _VALID_GUID2])
+    assert result.exit_code == 0
+    data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert data["tenant_id"] == "old-tenant"
+    assert data["site_url"] == "https://example.com"
+    assert data["client_id"] == _VALID_GUID2
+
+
+def test_config_help_lists_set():
+    result = runner.invoke(app, ["config", "--help"])
+    assert result.exit_code == 0
+    assert "set" in result.stdout

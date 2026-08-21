@@ -11,7 +11,7 @@ import yaml
 from workboard_cli import __version__
 from workboard_cli.agent import execute_intent, validate_intent
 from workboard_cli.auth import check_auth, get_token
-from workboard_cli.config import load_config
+from workboard_cli.config import load_config, update_local_config
 from workboard_cli.errors import WorkboardError
 from workboard_cli.graph_client import GraphClient
 from workboard_cli.normalize import normalize_item
@@ -395,6 +395,35 @@ def config_validate(
                 "message": f"All {len(field_mappings)} field mappings validated against schema.",
             }
             print(json.dumps(result, indent=2))
+    except WorkboardError as e:
+        _error_exit(e)
+
+
+@config_app.command("set")
+def config_set(
+    tenant_id: str | None = typer.Option(None, "--tenant-id", help="Azure AD tenant ID (GUID)"),
+    client_id: str | None = typer.Option(None, "--client-id", help="Azure AD app client ID (GUID)"),
+):
+    """Set tenant_id and/or client_id in config/local.yaml."""
+    try:
+        overrides = {}
+        if tenant_id is not None:
+            overrides["tenant_id"] = tenant_id
+        if client_id is not None:
+            overrides["client_id"] = client_id
+
+        if not overrides:
+            raise WorkboardError(
+                "config_error",
+                "Provide at least one of --tenant-id or --client-id.",
+                "Example: workboard config set --tenant-id 918af52d-8dec-44c4-818a-cebf3c9b7767",
+            )
+
+        path = update_local_config(overrides)
+        keys = ", ".join(overrides.keys())
+        print(f"Updated {path}")
+        print(f"Set: {keys}")
+        print("Note: WORKBOARD_TENANT_ID/WORKBOARD_CLIENT_ID env vars take precedence over this file.")
     except WorkboardError as e:
         _error_exit(e)
 

@@ -8,7 +8,7 @@ from unittest.mock import mock_open, patch
 import pytest
 import yaml
 
-from workboard_cli.config import _deep_merge, load_config
+from workboard_cli.config import _deep_merge, is_valid_guid, load_config, update_local_config
 from workboard_cli.errors import WorkboardError
 
 # Shared defaults fixture — single source of truth for all mock-based tests.
@@ -176,3 +176,118 @@ def test_load_config_real_defaults_file():
     assert cfg["primary_list_name"], "primary_list_name must not be empty in defaults"
     assert isinstance(cfg["fields"], dict)
     assert isinstance(cfg["stage_aliases"], dict)
+
+
+# --- is_valid_guid tests ---
+
+
+def test_is_valid_guid_accepts_canonical_lowercase():
+    assert is_valid_guid("918af52d-8dec-44c4-818a-cebf3c9b7767")
+
+
+def test_is_valid_guid_accepts_canonical_uppercase():
+    assert is_valid_guid("918AF52D-8DEC-44C4-818A-CEBF3C9B7767")
+
+
+def test_is_valid_guid_accepts_mixed_case():
+    assert is_valid_guid("918af52D-8DEC-44c4-818a-cebf3c9B7767")
+
+
+def test_is_valid_guid_rejects_compact_form():
+    assert not is_valid_guid("918af52d8dec44c4818acebf3c9b7767")
+
+
+def test_is_valid_guid_rejects_braces():
+    assert not is_valid_guid("{918af52d-8dec-44c4-818a-cebf3c9b7767}")
+
+
+def test_is_valid_guid_rejects_wrong_segment_lengths():
+    assert not is_valid_guid("918af52d-8dec-44c4-818a-cebf3c9b776")
+
+
+def test_is_valid_guid_rejects_non_hex():
+    assert not is_valid_guid("918af52d-8dec-44c4-818a-cebf3c9b776z")
+
+
+def test_is_valid_guid_rejects_empty_string():
+    assert not is_valid_guid("")
+
+
+def test_is_valid_guid_rejects_none():
+    assert not is_valid_guid(None)
+
+
+# --- update_local_config tests ---
+
+
+def test_update_local_config_creates_file_when_missing(tmp_path):
+    target = tmp_path / "config" / "local.yaml"
+    result = update_local_config({"tenant_id": "918af52d-8dec-44c4-818a-cebf3c9b7767"}, path=target)
+    assert result == target
+    assert target.exists()
+    data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert data == {"tenant_id": "918af52d-8dec-44c4-818a-cebf3c9b7767"}
+
+
+def test_update_local_config_creates_parent_dir(tmp_path):
+    target = tmp_path / "a" / "b" / "c" / "local.yaml"
+    update_local_config({"tenant_id": "918af52d-8dec-44c4-818a-cebf3c9b7767"}, path=target)
+    assert target.exists()
+
+
+def test_update_local_config_preserves_existing_keys(tmp_path):
+    target = tmp_path / "local.yaml"
+    target.write_text(
+        yaml.dump({"tenant_id": "old-tenant", "site_url": "https://example.com"}),
+        encoding="utf-8",
+    )
+    update_local_config({"client_id": "c626c5b9-2fbb-4004-89a2-7660ea1906c0"}, path=target)
+    data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert data["tenant_id"] == "old-tenant"
+    assert data["site_url"] == "https://example.com"
+    assert data["client_id"] == "c626c5b9-2fbb-4004-89a2-7660ea1906c0"
+
+
+def test_update_local_config_updates_existing_key(tmp_path):
+    target = tmp_path / "local.yaml"
+    target.write_text(
+        yaml.dump({"tenant_id": "old-tenant"}),
+        encoding="utf-8",
+    )
+    update_local_config({"tenant_id": "918af52d-8dec-44c4-818a-cebf3c9b7767"}, path=target)
+    data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert data["tenant_id"] == "918af52d-8dec-44c4-818a-cebf3c9b7767"
+
+
+def test_update_local_config_both_keys(tmp_path):
+    target = tmp_path / "local.yaml"
+    update_local_config(
+        {
+            "tenant_id": "918af52d-8dec-44c4-818a-cebf3c9b7767",
+            "client_id": "c626c5b9-2fbb-4004-89a2-7660ea1906c0",
+        },
+        path=target,
+    )
+    data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert data["tenant_id"] == "918af52d-8dec-44c4-818a-cebf3c9b7767"
+    assert data["client_id"] == "c626c5b9-2fbb-4004-89a2-7660ea1906c0"
+
+
+def test_update_local_config_invalid_guid_raises(tmp_path):
+    target = tmp_path / "local.yaml"
+    with pytest.raises(WorkboardError) as exc_info:
+        update_local_config({"tenant_id": "not-a-guid"}, path=target)
+    assert exc_info.value.code == "config_error"
+    assert "tenant_id" in exc_info.value.message
+    assert not target.exists()
+
+
+def test_update_local_config_round_trip(tmp_path):
+    target = tmp_path / "local.yaml"
+    original = {
+        "tenant_id": "918af52d-8dec-44c4-818a-cebf3c9b7767",
+        "client_id": "c626c5b9-2fbb-4004-89a2-7660ea1906c0",
+    }
+    update_local_config(original, path=target)
+    reloaded = yaml.safe_load(target.read_text(encoding="utf-8"))
+    assert reloaded == original

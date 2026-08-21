@@ -1,9 +1,14 @@
 import os
+import re
 from pathlib import Path
 
 import yaml
 
 from workboard_cli.errors import WorkboardError
+
+GUID_RE = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
 
 DEFAULTS_PATH = Path("config/workboard.defaults.yaml")
 LOCAL_PATHS = [
@@ -21,6 +26,53 @@ def _deep_merge(base, overlay):
         else:
             merged[k] = v
     return merged
+
+
+def is_valid_guid(value: str) -> bool:
+    if not isinstance(value, str):
+        return False
+    return bool(GUID_RE.match(value))
+
+
+def update_local_config(overrides: dict, path: Path | None = None) -> Path:
+    target = path or LOCAL_PATHS[0]
+
+    for key, value in overrides.items():
+        if not is_valid_guid(value):
+            raise WorkboardError(
+                "config_error",
+                f"Invalid GUID format for {key}: {value}",
+                "Provide a valid GUID (e.g. 918af52d-8dec-44c4-818a-cebf3c9b7767).",
+            )
+
+    if target.exists():
+        try:
+            with open(target, encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        except yaml.YAMLError as exc:
+            raise WorkboardError(
+                "config_error",
+                f"Malformed YAML in {target}: {exc}",
+                "Fix the YAML syntax or delete the file to start fresh.",
+            )
+        if data is None:
+            data = {}
+        elif not isinstance(data, dict):
+            raise WorkboardError(
+                "config_error",
+                f"Config file {target} must contain a mapping, got {type(data).__name__}.",
+                "Fix the file to be a YAML mapping or delete it to start fresh.",
+            )
+    else:
+        data = {}
+
+    data.update(overrides)
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with open(target, "w", encoding="utf-8") as f:
+        yaml.safe_dump(data, f, sort_keys=False, default_flow_style=False)
+
+    return target
 
 
 def load_config(path=None):

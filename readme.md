@@ -47,6 +47,12 @@ To override defaults (e.g. for a different tenant), create `config/local.yaml` o
 - `WORKBOARD_SITE_URL`
 - `WORKBOARD_LIST_NAME`
 
+Or use the CLI to set tenant/client IDs directly:
+
+```bash
+workboard config set --tenant-id <guid> --client-id <guid>
+```
+
 ## Commands
 
 ```bash
@@ -65,6 +71,8 @@ workboard query recently-updated --days 7     # Recently updated
 workboard summary manager                     # Manager summary
 workboard agent query --intent open_items     # Agent-safe query
 workboard config validate                     # Validate config mapping
+workboard config set --tenant-id <guid>       # Set tenant ID in local config
+workboard config set --client-id <guid>       # Set client ID in local config
 ```
 
 ## Configuration

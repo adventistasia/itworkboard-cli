@@ -4,25 +4,17 @@ import re
 from datetime import datetime
 
 
-def _get_field(raw_fields, field_name, warnings):
-    value = raw_fields.get(field_name)
-    if value is None:
-        lookup_id_name = f"{field_name}LookupId"
-        value = raw_fields.get(lookup_id_name)
-        if value is not None:
-            return value
-        warnings.append(f"Field '{field_name}' not found in SharePoint item.")
-    return value
+def _get_field(raw_fields, field_name, warnings, *, required=False):
+    """Read a mapped field from raw SharePoint item fields.
 
-
-def _get_mapped_field(raw_fields, field_name, warnings):
-    """Read a mapped field with optional-absence semantics.
-
-    Returns the value when present, None when genuinely absent (no warning).
-    Warns when the field name is configured but not found in the item
-    (unavailable mapping).
+    When field_name is None (unconfigured mapping), returns None silently
+    for optional fields or warns for required fields. When field_name is
+    configured, looks up the value (with LookupId fallback) and warns if
+    the field is absent from the item (unavailable mapping).
     """
     if not field_name:
+        if required:
+            warnings.append(f"Field '{field_name}' not found in SharePoint item.")
         return None
     value = raw_fields.get(field_name)
     if value is None:
@@ -158,11 +150,6 @@ def _get_stage_category(stage, stage_aliases):
     return "unknown"
 
 
-def _build_source_url(site_url, list_name, item_id):
-    base = site_url.rstrip("/")
-    encoded = list_name.replace(" ", "%20")
-    return f"{base}/Lists/{encoded}/DispForm.aspx?ID={item_id}"
-
 
 def _validate_source_url(item, warnings):
     """Validate the item's webUrl as the sole sourceUrl input.
@@ -192,10 +179,8 @@ def normalize_item(item, config):
 
     warnings = []
 
-    stage = _get_mapped_field(raw_fields, field_map.get("stage"), warnings)
-    delivery_owner_raw = _get_mapped_field(
-        raw_fields, field_map.get("delivery_owner"), warnings
-    )
+    stage = _get_field(raw_fields, field_map.get("stage"), warnings)
+    delivery_owner_raw = _get_field(raw_fields, field_map.get("delivery_owner"), warnings)
 
     cycle_time_raw = raw_fields.get(field_map.get("cycle_time"))
     if cycle_time_raw is None:
@@ -216,12 +201,8 @@ def normalize_item(item, config):
     acceptance_raw = raw_fields.get(field_map.get("acceptance_criteria"))
     deliverables_raw = raw_fields.get(field_map.get("deliverables"))
 
-    decision_auth_raw = _get_mapped_field(
-        raw_fields, field_map.get("decision_authority"), warnings
-    )
-    acceptance_auth_raw = _get_mapped_field(
-        raw_fields, field_map.get("acceptance_authority"), warnings
-    )
+    decision_auth_raw = _get_field(raw_fields, field_map.get("decision_authority"), warnings)
+    acceptance_auth_raw = _get_field(raw_fields, field_map.get("acceptance_authority"), warnings)
     work_intake_raw = raw_fields.get(field_map.get("work_intake"))
 
     description_raw = raw_fields.get(field_map.get("description"))
@@ -231,7 +212,7 @@ def normalize_item(item, config):
 
     work_item = {
         "id": item_id,
-        "title": _get_field(raw_fields, field_map.get("title"), warnings) or "",
+        "title": _get_field(raw_fields, field_map.get("title"), warnings, required=True) or "",
         "stage": stage,
         "deliveryOwner": _parse_person(delivery_owner_raw),
         "decisionAuthority": _parse_person(decision_auth_raw),
@@ -242,10 +223,10 @@ def normalize_item(item, config):
         "dateStart": _parse_date(raw_fields.get(field_map.get("date_start"))),
         "dateClosed": _parse_date(raw_fields.get(field_map.get("date_closed"))),
         "createdDate": _parse_date(
-            _get_field(raw_fields, field_map.get("created"), warnings)
+            _get_field(raw_fields, field_map.get("created"), warnings, required=True)
         ),
         "modifiedDate": _parse_date(
-            _get_field(raw_fields, field_map.get("modified"), warnings)
+            _get_field(raw_fields, field_map.get("modified"), warnings, required=True)
         ),
         "stageCategory": _get_stage_category(stage, stage_aliases),
         "cycleTimeDays": ct["cycleTimeDays"],

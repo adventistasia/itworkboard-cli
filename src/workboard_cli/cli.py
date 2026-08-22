@@ -332,7 +332,10 @@ def items_get(
         field_names = list(cfg.get("fields", {}).values())
         item = get_list_item(client, site_id, target["id"], item_id, field_names=field_names)
         result = {"item": item}
-        primary_list = find_list(lists_data, cfg["primary_list_name"])
+        primary_list = (
+            target if list_name == cfg["primary_list_name"]
+            else find_list(lists_data, cfg["primary_list_name"])
+        )
         if primary_list and primary_list["id"] == target["id"]:
             result["workItem"] = normalize_item(item, cfg)
         envelope = {

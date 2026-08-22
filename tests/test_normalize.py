@@ -1,5 +1,4 @@
 from workboard_cli.normalize import (
-    _build_source_url,
     _coerce_cycle_time,
     _expand_work_intake,
     _extract_long_form_text,
@@ -118,11 +117,6 @@ def test_parse_person_none():
 def test_parse_date():
     assert "2026-06-30" in _parse_date("2026-06-30")
     assert _parse_date(None) is None
-
-
-def test_build_source_url():
-    url = _build_source_url("https://sharepoint.com/sites/Test", "WorkBoard", "42")
-    assert "DispForm.aspx?ID=42" in url
 
 
 def test_normalize_raw_fields():

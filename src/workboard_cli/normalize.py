@@ -4,32 +4,53 @@ import re
 from datetime import datetime
 
 
-def _get_field(raw_fields, field_name, warnings):
+def _get_field(raw_fields, field_name, warnings, *, required=False):
+    """Read a mapped field from raw SharePoint item fields.
+
+    When field_name is None (unconfigured mapping), returns None silently
+    for optional fields or warns for required fields. When field_name is
+    configured, looks up the value (with LookupId fallback). Only warns
+    when required=True and the field is absent from the item.
+    """
+    if not field_name:
+        if required:
+            warnings.append("Required field mapping is not configured.")
+        return None
     value = raw_fields.get(field_name)
     if value is None:
         lookup_id_name = f"{field_name}LookupId"
         value = raw_fields.get(lookup_id_name)
         if value is not None:
             return value
-        warnings.append(f"Field '{field_name}' not found in SharePoint item.")
+        if required:
+            warnings.append(f"Required field '{field_name}' not found in SharePoint item.")
     return value
 
 
-def _parse_date(value):
+def _parse_date(value, warnings=None):
     if value is None:
         return None
     if isinstance(value, str):
         if "T" not in value and " " not in value:
-            return value
+            # Date-only: validate YYYY-MM-DD shape
+            if re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
+                return value
+            if warnings is not None:
+                warnings.append(f"Malformed date value: '{value}'")
+            return None
         try:
             dt = datetime.fromisoformat(value.replace("Z", "+00:00"))  # noqa: FURB162
             return dt.isoformat()
         except (ValueError, TypeError):
-            return value
-    return str(value)
+            if warnings is not None:
+                warnings.append(f"Malformed date value: '{value}'")
+            return None
+    if warnings is not None:
+        warnings.append(f"Malformed date value (type {type(value).__name__}): {value!r}")
+    return None
 
 
-def _parse_person(value):
+def _parse_person(value, warnings=None):
     if value is None:
         return None
     if isinstance(value, dict):
@@ -40,7 +61,11 @@ def _parse_person(value):
         }
     if isinstance(value, str):
         return {"displayName": value, "email": None, "id": None}
-    return {"displayName": str(value), "email": None, "id": None}
+    if warnings is not None:
+        warnings.append(
+            f"Malformed person value (type {type(value).__name__}): {value!r}"
+        )
+    return None
 
 
 def _coerce_cycle_time(raw_value, warnings):
@@ -88,9 +113,15 @@ def _parse_work_brief(html, site_url, warnings):
         text = re.sub(r'<[^>]+>', '', inner).strip()
         text = html_mod.unescape(text)
         if not text:
+            warnings.append(
+                f"Work brief anchor with empty text omitted: href='{href}'"
+            )
             continue
         abs_url = urljoin(site_url + "/", href)
-        if not abs_url.startswith("http"):
+        if not abs_url.startswith(("http://", "https://")):
+            warnings.append(
+                f"Work brief anchor with non-HTTP URL omitted: href='{href}'"
+            )
             continue
         results.append({"url": abs_url, "text": text})
     return results
@@ -105,7 +136,7 @@ def _extract_long_form_text(html):
     return text
 
 
-def _expand_work_intake(raw_value):
+def _expand_work_intake(raw_value, warnings=None):
     if raw_value is None or (isinstance(raw_value, str) and raw_value.strip() == ""):
         return None
     if isinstance(raw_value, str):
@@ -119,6 +150,10 @@ def _expand_work_intake(raw_value):
                     "lookupValue": item.get("LookupValue") or item.get("lookupValue", ""),
                 })
         return result if result else None
+    if warnings is not None:
+        warnings.append(
+            f"Malformed WorkIntake value (type {type(raw_value).__name__}): {raw_value!r}"
+        )
     return None
 
 
@@ -133,10 +168,23 @@ def _get_stage_category(stage, stage_aliases):
     return "unknown"
 
 
-def _build_source_url(site_url, list_name, item_id):
-    base = site_url.rstrip("/")
-    encoded = list_name.replace(" ", "%20")
-    return f"{base}/Lists/{encoded}/DispForm.aspx?ID={item_id}"
+
+def _validate_source_url(item, warnings):
+    """Validate the item's webUrl as the sole sourceUrl input.
+
+    Returns the absolute HTTP(S) URL when valid, None plus a warning
+    when absent, relative, or unsupported-scheme.
+    """
+    web_url = item.get("webUrl")
+    if isinstance(web_url, str) and web_url.strip():
+        if web_url.startswith(("http://", "https://")):
+            return web_url
+        warnings.append(
+            f"sourceUrl from webUrl is not a valid absolute URL: '{web_url}'"
+        )
+        return None
+    warnings.append("sourceUrl unavailable: item has no webUrl.")
+    return None
 
 
 def normalize_item(item, config):
@@ -145,7 +193,6 @@ def normalize_item(item, config):
     field_map = config.get("fields", {})
     stage_aliases = config.get("stage_aliases", {})
     site_url = config.get("site_url", "")
-    list_name = config.get("primary_list_name", "WorkBoard")
     output_cfg = config.get("output", {})
 
     warnings = []
@@ -167,30 +214,40 @@ def normalize_item(item, config):
 
     why_raw = raw_fields.get(field_map.get("why"))
     schedule_raw = raw_fields.get(field_map.get("schedule"))
+    scope_raw = raw_fields.get(field_map.get("scope"))
+    requirements_raw = raw_fields.get(field_map.get("requirements"))
     acceptance_raw = raw_fields.get(field_map.get("acceptance_criteria"))
     deliverables_raw = raw_fields.get(field_map.get("deliverables"))
 
-    decision_auth_raw = raw_fields.get(field_map.get("decision_authority"))
-    acceptance_auth_raw = raw_fields.get(field_map.get("acceptance_authority"))
+    decision_auth_raw = _get_field(raw_fields, field_map.get("decision_authority"), warnings)
+    acceptance_auth_raw = _get_field(raw_fields, field_map.get("acceptance_authority"), warnings)
     work_intake_raw = raw_fields.get(field_map.get("work_intake"))
 
     description_raw = raw_fields.get(field_map.get("description"))
     priority_status_raw = raw_fields.get(field_map.get("priority_status"))
 
+    source_url = _validate_source_url(item, warnings)
+
     work_item = {
         "id": item_id,
-        "title": _get_field(raw_fields, field_map.get("title"), warnings) or "",
+        "title": _get_field(raw_fields, field_map.get("title"), warnings, required=True) or "",
         "stage": stage,
-        "deliveryOwner": _parse_person(delivery_owner_raw),
-        "decisionAuthority": _parse_person(decision_auth_raw),
-        "acceptanceAuthority": _parse_person(acceptance_auth_raw),
-        "why": _get_field(raw_fields, field_map.get("why"), warnings),
-        "dueDate": _parse_date(_get_field(raw_fields, field_map.get("date_due"), warnings)),
-        "dateCommitted": _parse_date(_get_field(raw_fields, field_map.get("date_committed"), warnings)),
-        "dateStart": _parse_date(_get_field(raw_fields, field_map.get("date_start"), warnings)),
-        "dateClosed": _parse_date(_get_field(raw_fields, field_map.get("date_closed"), warnings)),
-        "createdDate": _parse_date(_get_field(raw_fields, field_map.get("created"), warnings)),
-        "modifiedDate": _parse_date(_get_field(raw_fields, field_map.get("modified"), warnings)),
+        "deliveryOwner": _parse_person(delivery_owner_raw, warnings),
+        "decisionAuthority": _parse_person(decision_auth_raw, warnings),
+        "acceptanceAuthority": _parse_person(acceptance_auth_raw, warnings),
+        "why": why_raw,
+        "dueDate": _parse_date(raw_fields.get(field_map.get("date_due")), warnings),
+        "dateCommitted": _parse_date(raw_fields.get(field_map.get("date_committed")), warnings),
+        "dateStart": _parse_date(raw_fields.get(field_map.get("date_start")), warnings),
+        "dateClosed": _parse_date(raw_fields.get(field_map.get("date_closed")), warnings),
+        "createdDate": _parse_date(
+            _get_field(raw_fields, field_map.get("created"), warnings, required=True),
+            warnings,
+        ),
+        "modifiedDate": _parse_date(
+            _get_field(raw_fields, field_map.get("modified"), warnings, required=True),
+            warnings,
+        ),
         "stageCategory": _get_stage_category(stage, stage_aliases),
         "cycleTimeDays": ct["cycleTimeDays"],
         "cycleTimeAnomaly": ct["cycleTimeAnomaly"],
@@ -198,12 +255,14 @@ def normalize_item(item, config):
         "workBriefLinks": work_brief_links,
         "whyText": _extract_long_form_text(why_raw),
         "scheduleText": _extract_long_form_text(schedule_raw),
+        "scopeText": _extract_long_form_text(scope_raw),
+        "requirementsText": _extract_long_form_text(requirements_raw),
         "acceptanceCriteriaText": _extract_long_form_text(acceptance_raw),
         "deliverablesText": _extract_long_form_text(deliverables_raw),
-        "workIntake": _expand_work_intake(work_intake_raw),
+        "workIntake": _expand_work_intake(work_intake_raw, warnings),
         "description": description_raw,
         "priorityStatus": priority_status_raw,
-        "sourceUrl": _build_source_url(site_url, list_name, item_id),
+        "sourceUrl": source_url,
         "raw": {},
         "warnings": warnings,
     }

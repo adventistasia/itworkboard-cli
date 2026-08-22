@@ -83,6 +83,49 @@ List items from a SharePoint list. Default limit is 10.
 
 Get a single item by its SharePoint item ID.
 
+**Primary WorkBoard list** — when the resolved list matches the configured primary list, the response includes both the unchanged raw Graph item and the authoritative WorkItem:
+
+```json
+{
+  "status": "ok",
+  "source": {
+    "system": "sharepoint",
+    "siteUrl": "...",
+    "listName": "WorkBoard",
+    "listId": "..."
+  },
+  "retrievedAt": "2026-08-21T00:00:00Z",
+  "sessionId": "...",
+  "result": {
+    "item": { "..." },
+    "workItem": {
+      "id": "123",
+      "title": "...",
+      "scopeText": "...",
+      "requirementsText": "...",
+      "...": "..."
+    }
+  }
+}
+```
+
+`result.item` is the unchanged raw Graph item. `result.workItem` is the normalized WorkItem (see `docs/agent_json_contract.md`). No opt-in flag is required.
+
+**Custom or non-WorkBoard list** — the response includes only the raw item:
+
+```json
+{
+  "status": "ok",
+  "result": {
+    "item": { "..." }
+  }
+}
+```
+
+**Not found** — returns the existing structured resource-not-found error without any partial `result.item` or `result.workItem`.
+
+`items get` is a general read-only CLI command and is **not** an approved agent-facing interface. Official AI-agent access remains `workboard agent query --intent <name>`.
+
 ### `workboard query open`
 
 Return items whose stage/status maps to an open alias.

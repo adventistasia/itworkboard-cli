@@ -313,12 +313,14 @@ def items_list(
 @items_app.command("get")
 def items_get(
     item_id: str = typer.Argument(..., help="Item ID"),
-    list_name: str = typer.Option("WorkBoard", "--list", help="List name"),
+    list_name: str = typer.Option(None, "--list", help="List name"),
     format: str = typer.Option("json", "--format", help="Output format"),
 ):
     """Get a single list item by ID."""
     try:
         cfg, client = _get_client()
+        if list_name is None:
+            list_name = cfg.get("primary_list_name", "WorkBoard")
         site = get_site(client, cfg["site_url"])
         site_id = site.get("id")
         lists_data = get_lists(client, site_id)
@@ -331,12 +333,19 @@ def items_get(
             )
         field_names = list(cfg.get("fields", {}).values())
         item = get_list_item(client, site_id, target["id"], item_id, field_names=field_names)
+        result = {"item": item}
+        primary_list = (
+            target if list_name == cfg["primary_list_name"]
+            else find_list(lists_data, cfg["primary_list_name"])
+        )
+        if primary_list and primary_list["id"] == target["id"]:
+            result["workItem"] = normalize_item(item, cfg)
         envelope = {
             "status": "ok",
             "source": _build_source(cfg["site_url"], list_name, target["id"]),
             "retrievedAt": _now_iso(),
             "sessionId": get_session_id(),
-            "result": {"item": item},
+            "result": result,
         }
         print(json.dumps(envelope, indent=2))
     except WorkboardError as e:

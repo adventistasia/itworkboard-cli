@@ -331,12 +331,16 @@ def items_get(
             )
         field_names = list(cfg.get("fields", {}).values())
         item = get_list_item(client, site_id, target["id"], item_id, field_names=field_names)
+        result = {"item": item}
+        primary_list = find_list(lists_data, cfg["primary_list_name"])
+        if primary_list and primary_list["id"] == target["id"]:
+            result["workItem"] = normalize_item(item, cfg)
         envelope = {
             "status": "ok",
             "source": _build_source(cfg["site_url"], list_name, target["id"]),
             "retrievedAt": _now_iso(),
             "sessionId": get_session_id(),
-            "result": {"item": item},
+            "result": result,
         }
         print(json.dumps(envelope, indent=2))
     except WorkboardError as e:

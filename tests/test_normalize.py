@@ -426,6 +426,7 @@ def test_normalize_item_malformed_project_date_person_and_lookup_warn():
     assert any("RelProject" in w for w in result["warnings"])
 
     assert result["dueDate"] is None
+    assert any("date" in w.lower() for w in result["warnings"]), "Malformed date should warn"
 
     assert result["deliveryOwner"] is None
     assert any("person" in w.lower() for w in result["warnings"]), "Malformed person should warn"

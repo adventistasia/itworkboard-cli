@@ -27,7 +27,7 @@ def _get_field(raw_fields, field_name, warnings, *, required=False):
     return value
 
 
-def _parse_date(value):
+def _parse_date(value, warnings=None):
     if value is None:
         return None
     if isinstance(value, str):
@@ -35,12 +35,18 @@ def _parse_date(value):
             # Date-only: validate YYYY-MM-DD shape
             if re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
                 return value
+            if warnings is not None:
+                warnings.append(f"Malformed date value: '{value}'")
             return None
         try:
             dt = datetime.fromisoformat(value.replace("Z", "+00:00"))  # noqa: FURB162
             return dt.isoformat()
         except (ValueError, TypeError):
+            if warnings is not None:
+                warnings.append(f"Malformed date value: '{value}'")
             return None
+    if warnings is not None:
+        warnings.append(f"Malformed date value (type {type(value).__name__}): {value!r}")
     return None
 
 
@@ -230,15 +236,17 @@ def normalize_item(item, config):
         "decisionAuthority": _parse_person(decision_auth_raw, warnings),
         "acceptanceAuthority": _parse_person(acceptance_auth_raw, warnings),
         "why": why_raw,
-        "dueDate": _parse_date(raw_fields.get(field_map.get("date_due"))),
-        "dateCommitted": _parse_date(raw_fields.get(field_map.get("date_committed"))),
-        "dateStart": _parse_date(raw_fields.get(field_map.get("date_start"))),
-        "dateClosed": _parse_date(raw_fields.get(field_map.get("date_closed"))),
+        "dueDate": _parse_date(raw_fields.get(field_map.get("date_due")), warnings),
+        "dateCommitted": _parse_date(raw_fields.get(field_map.get("date_committed")), warnings),
+        "dateStart": _parse_date(raw_fields.get(field_map.get("date_start")), warnings),
+        "dateClosed": _parse_date(raw_fields.get(field_map.get("date_closed")), warnings),
         "createdDate": _parse_date(
-            _get_field(raw_fields, field_map.get("created"), warnings, required=True)
+            _get_field(raw_fields, field_map.get("created"), warnings, required=True),
+            warnings,
         ),
         "modifiedDate": _parse_date(
-            _get_field(raw_fields, field_map.get("modified"), warnings, required=True)
+            _get_field(raw_fields, field_map.get("modified"), warnings, required=True),
+            warnings,
         ),
         "stageCategory": _get_stage_category(stage, stage_aliases),
         "cycleTimeDays": ct["cycleTimeDays"],

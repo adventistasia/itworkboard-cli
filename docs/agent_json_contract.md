@@ -97,6 +97,8 @@ AI agents that call `workboard agent query --intent <name>`. This is the **only*
   "workBriefLinks": [{"url": "https://...", "text": "Doc Name"}],
   "whyText": "Plain text from Why field",
   "scheduleText": "Plain text from Schedule field",
+  "scopeText": "Plain text from Scope field",
+  "requirementsText": "Plain text from Requirements field",
   "acceptanceCriteriaText": "Plain text from AcceptanceCriteria field",
   "deliverablesText": "Plain text from Deliverables field",
   "workIntake": [{"lookupId": null, "lookupValue": "Item Name"}],
@@ -132,6 +134,8 @@ AI agents that call `workboard agent query --intent <name>`. This is the **only*
 | `workBriefLinks` | `RelWorkBrief` | no | Array of `{"url": str, "text": str}` from HTML `<a>` tags |
 | `whyText` | `Why` (computed) | no | Plain-text extraction of HTML `Why` field |
 | `scheduleText` | `Schedule` (computed) | no | Plain-text extraction of HTML `Schedule` field |
+| `scopeText` | `Scope` (computed) | no | Plain-text extraction of HTML `Scope` field |
+| `requirementsText` | `Requirements` (computed) | no | Plain-text extraction of HTML `Requirements` field |
 | `acceptanceCriteriaText` | `AcceptanceCriteria` (computed) | no | Plain-text extraction of HTML field |
 | `deliverablesText` | `Deliverables` (computed) | no | Plain-text extraction of HTML field |
 | `workIntake` | `WorkIntake` | yes | Array of `{"lookupId": int\|null, "lookupValue": str}` or null |
@@ -140,6 +144,18 @@ AI agents that call `workboard agent query --intent <name>`. This is the **only*
 | `sourceUrl` | computed | yes | Direct link to the SharePoint list item |
 | `raw` | config | — | Raw SharePoint fields if `include_raw_fields` is true |
 | `warnings` | computed | — | List of warning strings for this item |
+
+### Sentinel and warning rules
+
+- Every documented key is always present. Genuine optional absence uses `""` for text fields, `null` for nullable scalars/objects/dates, and `[]` for link arrays — no warning.
+- Required field absence, unavailable configured mappings, and malformed values use the same category sentinel plus a normalization warning. Malformed content never becomes authoritative output; raw `result.item` remains the audit source.
+- Legacy person-name strings normalize to `{displayName, email: null, id: null}` without warning.
+- `sourceUrl` is validated from the raw item's `webUrl`; absent, relative, or unsupported-scheme values yield `null` plus a warning.
+- Work-brief anchors with empty text or non-HTTP URLs are omitted with a warning; valid siblings survive.
+
+### Additive propagation
+
+Additive WorkItem fields (`scopeText`, `requirementsText`) appear on existing normalized list, query, and intent outputs through the shared `normalize_item()` path. This does not change filtering, routing, summary, or approved-intent behavior.
 
 ## Error envelope
 

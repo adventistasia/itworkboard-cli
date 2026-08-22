@@ -1,5 +1,4 @@
 from workboard_cli.normalize import (
-    _build_source_url,
     _coerce_cycle_time,
     _expand_work_intake,
     _extract_long_form_text,
@@ -31,6 +30,8 @@ SAMPLE_CONFIG = {
         "rel_work_brief": "RelWorkBrief",
         "description": "Description",
         "priority_status": "PriorityStatus",
+        "scope": "Scope",
+        "requirements": "Requirements",
         "date_due": "DateDue",
         "date_committed": "DateCommitted",
         "date_start": "DateStart",
@@ -81,11 +82,15 @@ def test_normalize_basic():
 
 
 def test_normalize_missing_field():
+    """Required field absence warns; optional field absence is silent."""
     item = {"id": 1, "fields": {"Title": "Test"}}
     result = normalize_item(item, SAMPLE_CONFIG)
     warnings = result["warnings"]
     assert len(warnings) > 0
-    assert any("Stage" in w for w in warnings)
+    assert any("Created" in w for w in warnings), "Required field 'Created' should warn"
+    assert any("Modified" in w for w in warnings), "Required field 'Modified' should warn"
+    stage_warnings = [w for w in warnings if "Stage" in w]
+    assert len(stage_warnings) == 0, "Optional field 'Stage' should not warn"
 
 
 def test_normalize_stage_category():
@@ -116,11 +121,6 @@ def test_parse_person_none():
 def test_parse_date():
     assert "2026-06-30" in _parse_date("2026-06-30")
     assert _parse_date(None) is None
-
-
-def test_build_source_url():
-    url = _build_source_url("https://sharepoint.com/sites/Test", "WorkBoard", "42")
-    assert "DispForm.aspx?ID=42" in url
 
 
 def test_normalize_raw_fields():
@@ -330,3 +330,349 @@ def test_normalize_item_work_intake_none():
     item = {"id": 1, "fields": {"Title": "Test"}}
     result = normalize_item(item, SAMPLE_CONFIG)
     assert result["workIntake"] is None
+
+# --- U-1: Category sentinels, diagnostics, and field-state policy ---
+
+DOCUMENTED_KEYS = [
+    "id", "title", "stage", "deliveryOwner", "decisionAuthority",
+    "acceptanceAuthority", "why", "dueDate", "dateCommitted", "dateStart",
+    "dateClosed", "createdDate", "modifiedDate", "stageCategory",
+    "cycleTimeDays", "cycleTimeAnomaly", "relProject", "workBriefLinks",
+    "whyText", "scheduleText", "scopeText", "requirementsText",
+    "acceptanceCriteriaText", "deliverablesText",
+    "workIntake", "description", "priorityStatus", "sourceUrl", "raw",
+    "warnings",
+]
+
+
+def test_normalize_item_optional_absence_uses_category_sentinels_without_warning():
+    """AE14 -- Supply only required source values; optional fields use sentinels silently."""
+    item = {
+        "id": 7,
+        "fields": {
+            "Title": "Minimal Item",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=7",
+    }
+    result = normalize_item(item, SAMPLE_CONFIG)
+
+    for key in DOCUMENTED_KEYS:
+        assert key in result, f"Documented key '{key}' missing from WorkItem"
+
+    assert result["id"] == "7"
+    assert result["title"] == "Minimal Item"
+    assert result["stage"] is None
+    assert result["deliveryOwner"] is None
+    assert result["decisionAuthority"] is None
+    assert result["acceptanceAuthority"] is None
+    assert result["why"] is None
+    assert result["dueDate"] is None
+    assert result["dateCommitted"] is None
+    assert result["dateStart"] is None
+    assert result["dateClosed"] is None
+    assert result["relProject"] is None
+    assert result["workBriefLinks"] == []
+    assert result["whyText"] == ""
+    assert result["scheduleText"] == ""
+    assert result["scopeText"] == ""
+    assert result["requirementsText"] == ""
+    assert result["acceptanceCriteriaText"] == ""
+    assert result["deliverablesText"] == ""
+    assert result["workIntake"] is None
+    assert result["description"] is None
+    assert result["priorityStatus"] is None
+    assert result["raw"] == {}
+    assert result["warnings"] == []
+
+
+def test_normalize_item_unavailable_mapping_and_required_absence_warn():
+    """AE15 -- Required field absence emits warnings."""
+    item = {
+        "id": 8,
+        "fields": {
+            "Title": "Warning Item",
+            "Stage": "Open",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=8",
+    }
+    result = normalize_item(item, SAMPLE_CONFIG)
+    warnings = result["warnings"]
+    assert len(warnings) >= 2
+    assert any("Created" in w for w in warnings), "Required field 'Created' absence should warn"
+    assert any("Modified" in w for w in warnings), "Required field 'Modified' absence should warn"
+
+
+def test_normalize_item_malformed_project_date_person_and_lookup_warn():
+    """AE4/AE15 -- Malformed project, date, person, and work-intake produce sentinels and warnings."""
+    item = {
+        "id": 9,
+        "fields": {
+            "Title": "Malformed",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+            "RelProject": "not-valid-json",
+            "DateDue": "not-a-date",
+            "DeliveryOwner": 12345,
+            "DecisionAuthority": True,
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=9",
+    }
+    cfg = {**SAMPLE_CONFIG, "output": {"include_raw_fields": True}}
+    result = normalize_item(item, cfg)
+
+    assert result["relProject"] is None
+    assert any("RelProject" in w for w in result["warnings"])
+
+    assert result["dueDate"] is None
+    assert any("date" in w.lower() for w in result["warnings"]), "Malformed date should warn"
+
+    assert result["deliveryOwner"] is None
+    assert any("person" in w.lower() for w in result["warnings"]), "Malformed person should warn"
+
+    assert result["decisionAuthority"] is None
+    # Both DeliveryOwner (int) and DecisionAuthority (bool) are malformed person values
+    person_warnings = [w for w in result["warnings"] if "person" in w.lower()]
+    assert len(person_warnings) >= 2, f"Expected 2+ person warnings, got {len(person_warnings)}"
+
+    assert result["raw"]["RelProject"] == "not-valid-json"
+
+
+def test_normalize_item_legacy_person_string_is_valid_without_warning():
+    """AE7 -- Legacy person-name string normalizes without warning."""
+    item = {
+        "id": 10,
+        "fields": {
+            "Title": "Legacy Person",
+            "DeliveryOwner": "Example Person",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=10",
+    }
+    result = normalize_item(item, SAMPLE_CONFIG)
+    assert result["deliveryOwner"] == {
+        "displayName": "Example Person",
+        "email": None,
+        "id": None,
+    }
+    delivery_warnings = [w for w in result["warnings"] if "DeliveryOwner" in w]
+    assert delivery_warnings == [], f"Legacy person string should not warn: {delivery_warnings}"
+
+
+def test_parse_work_brief_filters_invalid_entries_and_warns():
+    """AE11/R16 -- Invalid work-brief anchors are omitted with warnings; valid siblings survive."""
+    html = (
+        '<a href="https://valid.example.com/doc.pdf">Valid Doc</a>'
+        '<a href="/relative/path">Relative Link</a>'
+        '<a href="ftp://invalid.example.com/file">FTP Link</a>'
+        '<a href="https://valid2.example.com/page"></a>'
+        '<a href="https://valid3.example.com/other">Valid 3</a>'
+    )
+    w = []
+    result = _parse_work_brief(html, "https://sharepoint.com/sites/Test", w)
+    assert len(result) == 3
+    assert result[0]["text"] == "Valid Doc"
+    assert result[0]["url"] == "https://valid.example.com/doc.pdf"
+    assert result[1]["text"] == "Relative Link"
+    assert result[1]["url"] == "https://sharepoint.com/relative/path"
+    assert result[2]["text"] == "Valid 3"
+    assert result[2]["url"] == "https://valid3.example.com/other"
+    assert len(w) >= 1
+
+
+def test_parse_work_brief_missing_or_empty_is_silent_empty_array():
+    """AE11 -- Missing or empty RelWorkBrief yields [] with no warning."""
+    assert _parse_work_brief(None, "https://example.com", []) == []
+    w = []
+    assert _parse_work_brief("", "https://example.com", w) == []
+    assert w == []
+
+
+def test_source_url_uses_validated_graph_item_web_url():
+    """AE10/AE15 -- sourceUrl comes from raw item.webUrl, validated as absolute HTTP(S)."""
+    item = {
+        "id": 42,
+        "fields": {"Title": "URL Test", "Created": "2026-01-01T00:00:00Z", "Modified": "2026-01-02T00:00:00Z"},
+        "webUrl": "https://sharepoint.com/sites/Test/Lists/TestBoard/DispForm.aspx?ID=42",
+    }
+    result = normalize_item(item, SAMPLE_CONFIG)
+    assert result["sourceUrl"] == "https://sharepoint.com/sites/Test/Lists/TestBoard/DispForm.aspx?ID=42"
+
+    item_no_url = {
+        "id": 43,
+        "fields": {"Title": "No URL", "Created": "2026-01-01T00:00:00Z", "Modified": "2026-01-02T00:00:00Z"},
+    }
+    result2 = normalize_item(item_no_url, SAMPLE_CONFIG)
+    assert result2["sourceUrl"] is None
+    assert any("webUrl" in w for w in result2["warnings"])
+
+    item_relative = {
+        "id": 44,
+        "fields": {"Title": "Relative URL", "Created": "2026-01-01T00:00:00Z", "Modified": "2026-01-02T00:00:00Z"},
+        "webUrl": "/relative/path",
+    }
+    result3 = normalize_item(item_relative, SAMPLE_CONFIG)
+    assert result3["sourceUrl"] is None
+    assert any("webUrl" in w for w in result3["warnings"])
+
+
+# --- U-2: Complete WorkItem capture projection ---
+
+
+def test_normalize_item_adds_html_free_scope_and_requirements_text():
+    """AE5/AE6 -- Scope and Requirements become HTML-free text; no aliases."""
+    item = {
+        "id": 20,
+        "fields": {
+            "Title": "Scope Test",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+            "Scope": "<p>Deploy to <b>three</b> regions by Q3.</p>",
+            "Requirements": "<div>Must support &#58; unicode &#38; entities</div>",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=20",
+    }
+    result = normalize_item(item, SAMPLE_CONFIG)
+    assert result["scopeText"] == "Deploy to three regions by Q3."
+    assert result["requirementsText"] == "Must support : unicode & entities"
+    assert "scope" not in result
+    assert "requirements" not in result
+    assert "Scope" not in result
+    assert "Requirements" not in result
+
+
+def test_normalize_item_emits_only_canonical_project_date_and_link_names():
+    """AE3/AE8/AE10 -- Only canonical names exist; prohibited aliases are absent."""
+    item = {
+        "id": 21,
+        "fields": {
+            "Title": "Canonical Test",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+            "DateDue": "2026-06-30",
+            "DateCommitted": "2026-06-01",
+            "DateStart": "2026-05-15",
+            "DateClosed": "2026-07-01",
+            "RelProject": '{"id":3,"text":"Retirement System"}',
+            "RelWorkBrief": '<a href="https://example.com/doc">Doc</a>',
+        },
+        "webUrl": "https://sharepoint.com/sites/Test/Lists/TestBoard/DispForm.aspx?ID=21",
+    }
+    cfg = {**SAMPLE_CONFIG, "output": {"include_raw_fields": True}}
+    result = normalize_item(item, cfg)
+    assert result["relProject"] == {"id": 3, "text": "Retirement System"}
+    assert result["dueDate"] == "2026-06-30"
+    assert result["dateCommitted"] == "2026-06-01"
+    assert result["dateStart"] == "2026-05-15"
+    assert result["dateClosed"] == "2026-07-01"
+    assert result["createdDate"] is not None
+    assert result["modifiedDate"] is not None
+    assert len(result["workBriefLinks"]) == 1
+    assert result["sourceUrl"] == "https://sharepoint.com/sites/Test/Lists/TestBoard/DispForm.aspx?ID=21"
+
+    prohibited = [
+        "linkedProject", "due_date", "date_committed", "date_start",
+        "date_closed", "created_date", "modified_date", "relatedLinks",
+    ]
+    for key in prohibited:
+        assert key not in result, f"Prohibited alias '{key}' found in WorkItem"
+
+
+def test_normalize_item_keeps_acceptance_and_deliverables_as_text_without_state():
+    """AE9/AE13 -- Acceptance criteria and deliverables are text-only; no invented state."""
+    item = {
+        "id": 22,
+        "fields": {
+            "Title": "State Test",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+            "AcceptanceCriteria": "<p>All tests pass</p>",
+            "Deliverables": "<ul><li>Doc A</li><li>Doc B</li></ul>",
+            "DecisionAuthority": "Alice Smith",
+            "AcceptanceAuthority": "Bob Jones",
+            "DateDue": "2026-06-30",
+            "DateClosed": "2026-07-01",
+            "Stage": "Done",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=22",
+    }
+    result = normalize_item(item, SAMPLE_CONFIG)
+    assert result["acceptanceCriteriaText"] == "All tests pass"
+    assert result["deliverablesText"] == "Doc ADoc B"
+    state_keys = ["accepted", "complete", "closed", "isAccepted", "isComplete", "isClosed"]
+    for key in state_keys:
+        assert key not in result, f"Invented state key '{key}' found in WorkItem"
+
+
+def test_normalize_item_raw_option_preserves_original_long_form_markup():
+    """AE6 -- Raw fields preserve HTML markup while normalized text is plain."""
+    item = {
+        "id": 23,
+        "fields": {
+            "Title": "Raw Markup",
+            "Created": "2026-01-01T00:00:00Z",
+            "Modified": "2026-01-02T00:00:00Z",
+            "Scope": "<p>Scope <b>bold</b></p>",
+            "Requirements": "<div>Req <i>italic</i></div>",
+            "AcceptanceCriteria": "<span>AC text</span>",
+            "Deliverables": "<em>Del text</em>",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=23",
+    }
+    cfg = {**SAMPLE_CONFIG, "output": {"include_raw_fields": True}}
+    result = normalize_item(item, cfg)
+    assert result["raw"]["Scope"] == "<p>Scope <b>bold</b></p>"
+    assert result["raw"]["Requirements"] == "<div>Req <i>italic</i></div>"
+    assert result["raw"]["AcceptanceCriteria"] == "<span>AC text</span>"
+    assert result["raw"]["Deliverables"] == "<em>Del text</em>"
+    assert result["scopeText"] == "Scope bold"
+    assert result["requirementsText"] == "Req italic"
+    assert result["acceptanceCriteriaText"] == "AC text"
+    assert result["deliverablesText"] == "Del text"
+
+
+def test_normalize_item_additive_keys_preserve_existing_values():
+    """AE17 -- Only scopeText and requirementsText are added; all pre-existing values unchanged."""
+    item = {
+        "id": 24,
+        "fields": {
+            "Title": "Compatibility",
+            "Stage": "Open",
+            "DeliveryOwner": {"displayName": "Carol", "email": "carol@test.com"},
+            "Why": "Business case",
+            "DateDue": "2026-09-01",
+            "DateCommitted": "2026-08-01",
+            "DateStart": "2026-07-15",
+            "DateClosed": None,
+            "Created": "2026-06-01T00:00:00Z",
+            "Modified": "2026-06-15T00:00:00Z",
+            "RelProject": '{"id":5,"text":"New System"}',
+            "CycleTime": "12",
+            "Description": "A description",
+            "PriorityStatus": "High",
+            "Scope": "<p>Scope content</p>",
+            "Requirements": "<p>Requirements content</p>",
+        },
+        "webUrl": "https://example.com/sites/Test/Lists/Test/DispForm.aspx?ID=24",
+    }
+    cfg = {**SAMPLE_CONFIG, "output": {"include_raw_fields": True}}
+    result = normalize_item(item, cfg)
+
+    assert result["id"] == "24"
+    assert result["title"] == "Compatibility"
+    assert result["stage"] == "Open"
+    assert result["deliveryOwner"]["displayName"] == "Carol"
+    assert result["why"] == "Business case"
+    assert result["dueDate"] == "2026-09-01"
+    assert result["dateCommitted"] == "2026-08-01"
+    assert result["dateStart"] == "2026-07-15"
+    assert result["dateClosed"] is None
+    assert result["relProject"] == {"id": 5, "text": "New System"}
+    assert result["cycleTimeDays"] == 12
+    assert result["cycleTimeAnomaly"] is False
+    assert result["description"] == "A description"
+    assert result["priorityStatus"] == "High"
+    assert result["scopeText"] == "Scope content"
+    assert result["requirementsText"] == "Requirements content"

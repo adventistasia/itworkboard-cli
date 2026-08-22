@@ -424,12 +424,18 @@ def test_items_get_primary_preserves_top_level_metadata_and_session_id():
 
 
 def test_items_get_omitted_list_uses_configured_primary():
-    """AE1 -- Omitted --list defaults to configured primary."""
-    with _mock_items_get_patches():
+    """AE1 -- Omitted --list defaults to configured primary_list_name, not a hard-coded default."""
+    custom_cfg = {**_PRIMARY_CFG, "primary_list_name": "ITWorkBoard"}
+    custom_lists = [
+        {"id": "primary-list-id", "displayName": "ITWorkBoard", "name": "ITWorkBoard"},
+        {"id": "other-list-id", "displayName": "CustomList", "name": "CustomList"},
+    ]
+    with _mock_items_get_patches(cfg=custom_cfg, lists=custom_lists):
         result = runner.invoke(app, ["items", "get", "42"])
     assert result.exit_code == 0
     envelope = json.loads(result.stdout)
     assert "workItem" in envelope["result"]
+    assert envelope["result"]["workItem"]["id"] == "42"
 
 
 def test_items_get_custom_list_remains_raw_only():

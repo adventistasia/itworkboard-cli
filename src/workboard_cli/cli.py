@@ -313,12 +313,14 @@ def items_list(
 @items_app.command("get")
 def items_get(
     item_id: str = typer.Argument(..., help="Item ID"),
-    list_name: str = typer.Option("WorkBoard", "--list", help="List name"),
+    list_name: str = typer.Option(None, "--list", help="List name"),
     format: str = typer.Option("json", "--format", help="Output format"),
 ):
     """Get a single list item by ID."""
     try:
         cfg, client = _get_client()
+        if list_name is None:
+            list_name = cfg.get("primary_list_name", "WorkBoard")
         site = get_site(client, cfg["site_url"])
         site_id = site.get("id")
         lists_data = get_lists(client, site_id)

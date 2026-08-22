@@ -82,11 +82,15 @@ def test_normalize_basic():
 
 
 def test_normalize_missing_field():
+    """Required field absence warns; optional field absence is silent."""
     item = {"id": 1, "fields": {"Title": "Test"}}
     result = normalize_item(item, SAMPLE_CONFIG)
     warnings = result["warnings"]
     assert len(warnings) > 0
-    assert any("Stage" in w for w in warnings)
+    assert any("Created" in w for w in warnings), "Required field 'Created' should warn"
+    assert any("Modified" in w for w in warnings), "Required field 'Modified' should warn"
+    stage_warnings = [w for w in warnings if "Stage" in w]
+    assert len(stage_warnings) == 0, "Optional field 'Stage' should not warn"
 
 
 def test_normalize_stage_category():
@@ -380,8 +384,7 @@ def test_normalize_item_optional_absence_uses_category_sentinels_without_warning
     assert result["description"] is None
     assert result["priorityStatus"] is None
     assert result["raw"] == {}
-    stage_warnings = [w for w in result["warnings"] if "Stage" in w]
-    assert len(stage_warnings) <= 1, "Stage absence should produce at most one warning"
+    assert result["warnings"] == []
 
 
 def test_normalize_item_unavailable_mapping_and_required_absence_warn():
@@ -422,18 +425,15 @@ def test_normalize_item_malformed_project_date_person_and_lookup_warn():
     assert result["relProject"] is None
     assert any("RelProject" in w for w in result["warnings"])
 
-    assert result["dueDate"] == "not-a-date"
+    assert result["dueDate"] is None
 
-    assert result["deliveryOwner"] == {
-        "displayName": "12345",
-        "email": None,
-        "id": None,
-    }
-    assert result["decisionAuthority"] == {
-        "displayName": "True",
-        "email": None,
-        "id": None,
-    }
+    assert result["deliveryOwner"] is None
+    assert any("person" in w.lower() for w in result["warnings"]), "Malformed person should warn"
+
+    assert result["decisionAuthority"] is None
+    # Both DeliveryOwner (int) and DecisionAuthority (bool) are malformed person values
+    person_warnings = [w for w in result["warnings"] if "person" in w.lower()]
+    assert len(person_warnings) >= 2, f"Expected 2+ person warnings, got {len(person_warnings)}"
 
     assert result["raw"]["RelProject"] == "not-valid-json"
 

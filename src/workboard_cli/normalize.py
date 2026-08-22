@@ -9,12 +9,12 @@ def _get_field(raw_fields, field_name, warnings, *, required=False):
 
     When field_name is None (unconfigured mapping), returns None silently
     for optional fields or warns for required fields. When field_name is
-    configured, looks up the value (with LookupId fallback) and warns if
-    the field is absent from the item (unavailable mapping).
+    configured, looks up the value (with LookupId fallback). Only warns
+    when required=True and the field is absent from the item.
     """
     if not field_name:
         if required:
-            warnings.append(f"Field '{field_name}' not found in SharePoint item.")
+            warnings.append("Required field mapping is not configured.")
         return None
     value = raw_fields.get(field_name)
     if value is None:
@@ -22,7 +22,8 @@ def _get_field(raw_fields, field_name, warnings, *, required=False):
         value = raw_fields.get(lookup_id_name)
         if value is not None:
             return value
-        warnings.append(f"Field '{field_name}' not found in SharePoint item.")
+        if required:
+            warnings.append(f"Required field '{field_name}' not found in SharePoint item.")
     return value
 
 
@@ -31,16 +32,19 @@ def _parse_date(value):
         return None
     if isinstance(value, str):
         if "T" not in value and " " not in value:
-            return value
+            # Date-only: validate YYYY-MM-DD shape
+            if re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
+                return value
+            return None
         try:
             dt = datetime.fromisoformat(value.replace("Z", "+00:00"))  # noqa: FURB162
             return dt.isoformat()
         except (ValueError, TypeError):
-            return value
-    return str(value)
+            return None
+    return None
 
 
-def _parse_person(value):
+def _parse_person(value, warnings=None):
     if value is None:
         return None
     if isinstance(value, dict):
@@ -51,7 +55,11 @@ def _parse_person(value):
         }
     if isinstance(value, str):
         return {"displayName": value, "email": None, "id": None}
-    return {"displayName": str(value), "email": None, "id": None}
+    if warnings is not None:
+        warnings.append(
+            f"Malformed person value (type {type(value).__name__}): {value!r}"
+        )
+    return None
 
 
 def _coerce_cycle_time(raw_value, warnings):
@@ -104,7 +112,7 @@ def _parse_work_brief(html, site_url, warnings):
             )
             continue
         abs_url = urljoin(site_url + "/", href)
-        if not abs_url.startswith("http"):
+        if not abs_url.startswith(("http://", "https://")):
             warnings.append(
                 f"Work brief anchor with non-HTTP URL omitted: href='{href}'"
             )
@@ -122,7 +130,7 @@ def _extract_long_form_text(html):
     return text
 
 
-def _expand_work_intake(raw_value):
+def _expand_work_intake(raw_value, warnings=None):
     if raw_value is None or (isinstance(raw_value, str) and raw_value.strip() == ""):
         return None
     if isinstance(raw_value, str):
@@ -136,6 +144,10 @@ def _expand_work_intake(raw_value):
                     "lookupValue": item.get("LookupValue") or item.get("lookupValue", ""),
                 })
         return result if result else None
+    if warnings is not None:
+        warnings.append(
+            f"Malformed WorkIntake value (type {type(raw_value).__name__}): {raw_value!r}"
+        )
     return None
 
 
@@ -214,9 +226,9 @@ def normalize_item(item, config):
         "id": item_id,
         "title": _get_field(raw_fields, field_map.get("title"), warnings, required=True) or "",
         "stage": stage,
-        "deliveryOwner": _parse_person(delivery_owner_raw),
-        "decisionAuthority": _parse_person(decision_auth_raw),
-        "acceptanceAuthority": _parse_person(acceptance_auth_raw),
+        "deliveryOwner": _parse_person(delivery_owner_raw, warnings),
+        "decisionAuthority": _parse_person(decision_auth_raw, warnings),
+        "acceptanceAuthority": _parse_person(acceptance_auth_raw, warnings),
         "why": why_raw,
         "dueDate": _parse_date(raw_fields.get(field_map.get("date_due"))),
         "dateCommitted": _parse_date(raw_fields.get(field_map.get("date_committed"))),
@@ -239,7 +251,7 @@ def normalize_item(item, config):
         "requirementsText": _extract_long_form_text(requirements_raw),
         "acceptanceCriteriaText": _extract_long_form_text(acceptance_raw),
         "deliverablesText": _extract_long_form_text(deliverables_raw),
-        "workIntake": _expand_work_intake(work_intake_raw),
+        "workIntake": _expand_work_intake(work_intake_raw, warnings),
         "description": description_raw,
         "priorityStatus": priority_status_raw,
         "sourceUrl": source_url,
